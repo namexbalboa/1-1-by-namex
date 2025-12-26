@@ -1,0 +1,97 @@
+{
+  "common": {
+    "welcome": "Bem-vindo",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "logout": "Sair",
+    "language": "Idioma"
+  },
+  "auth": {
+    "login": "Entrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "loginTitle": "Login",
+    "loginSubtitle": "Entre com suas credenciais"
+  },
+  "meeting": {
+    "title": "Reunião 1:1",
+    "retrospective": "Retrospectiva",
+    "planning": "Planejamento",
+    "actionItems": "Itens de Ação",
+    "addActionItem": "Adicionar Item",
+    "pulse": "Pulso Semanal",
+    "blocks": {
+      "a": {
+        "title": "Bloco A: Operacional",
+        "timeDistribution": "Distribuição de Tempo",
+        "execution": "Execução",
+        "meetings": "Reuniões",
+        "resolution": "Resolução de Problemas",
+        "blockers": "Bloqueadores",
+        "blockersLevel": "Nível de Bloqueio",
+        "blockersTags": "Tags de Bloqueadores",
+        "toolAdequacy": "Adequação das Ferramentas",
+        "priorityClarity": "Clareza de Prioridades"
+      },
+      "b": {
+        "title": "Bloco B: Estratégia",
+        "goalConnection": "Conexão com Objetivos",
+        "autonomy": "Autonomia",
+        "innovation": "Inovação"
+      },
+      "c": {
+        "title": "Bloco C: Dinâmica Humana",
+        "psychologicalSafety": "Segurança Psicológica",
+        "collaborationFriction": "Atrito na Colaboração",
+        "recognition": "Reconhecimento"
+      },
+      "d": {
+        "title": "Bloco D: Desenvolvimento",
+        "intellectualChallenge": "Desafio Intelectual",
+        "skill": "Habilidade",
+        "challenge": "Desafio",
+        "strengthsUtilization": "Utilização de Forças",
+        "activeLearning": "Aprendizado Ativo",
+        "mentalHealth": "Saúde Mental",
+        "biweeklyFocus": "Foco Quinzenal"
+      }
+    },
+    "status": {
+      "done": "Concluído",
+      "pending": "Pendente",
+      "blocked": "Bloqueado"
+    },
+    "blockersLevel": {
+      "green": "Verde - Sem bloqueios",
+      "yellow": "Amarelo - Alguns bloqueios",
+      "red": "Vermelho - Bloqueios críticos"
+    },
+    "recognition": {
+      "low": "Baixo",
+      "medium": "Médio",
+      "high": "Alto"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Visão Geral",
+    "annualReport": "Relatório Anual",
+    "teamOverview": "Visão da Equipe",
+    "trends": "Tendências"
+  },
+  "errors": {
+    "generic": "Algo deu errado. Tente novamente.",
+    "unauthorized": "Você não tem permissão para acessar este recurso.",
+    "notFound": "Recurso não encontrado.",
+    "networkError": "Erro de conexão. Verifique sua internet."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "errors": {
+    "validation": {
+      "required": "Required field",
+      "email": "Invalid email",
+      "min": "Minimum value is {min}",
+      "max": "Maximum value is {max}",
+      "enum": "Value must be one of: {values}"
+    },
+    "auth": {
+      "unauthorized": "Unauthorized",
+      "forbidden": "Access denied",
+      "invalidToken": "Invalid token"
+    },
+    "tenant": {
+      "notFound": "Tenant not found",
+      "alreadyExists": "Tenant with this name already exists"
+    },
+    "collaborator": {
+      "notFound": "Collaborator not found",
+      "emailExists": "Collaborator with this email already exists",
+      "uidExists": "Collaborator with this Firebase UID already exists",
+      "managerNotFound": "Manager not found",
+      "invalidManager": "Specified user is not a manager"
+    },
+    "meeting": {
+      "journeyNotFound": "Journey not found",
+      "journeyExists": "Journey already exists for this collaborator and year",
+      "meetingNotFound": "Meeting not found",
+      "meetingExists": "Meeting with this number already exists in the journey"
+    }
+  },
+  "success": {
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully"
+  },
+  "meeting": {
+    "blocks": {
+      "a": {
+        "title": "Operational",
+        "timeDistribution": "Time Distribution",
+        "blockers": "Blockers",
+        "toolAdequacy": "Tool Adequacy",
+        "priorityClarity": "Priority Clarity"
+      },
+      "b": {
+        "title": "Strategy",
+        "goalConnection": "Goal Connection",
+        "autonomy": "Perceived Autonomy",
+        "innovation": "Innovation"
+      },
+      "c": {
+        "title": "Human Dynamics",
+        "psychologicalSafety": "Psychological Safety",
+        "collaborationFriction": "Collaboration Friction",
+        "recognition": "Recognition"
+      },
+      "d": {
+        "title": "Development",
+        "intellectualChallenge": "Intellectual Challenge",
+        "strengthsUtilization": "Strengths Utilization",
+        "activeLearning": "Active Learning",
+        "mentalHealth": "Mental Health",
+        "biweeklyFocus": "Biweekly Focus"
+      }
+    },
+    "actionItems": {
+      "title": "Action Items",
+      "status": {
+        "done": "Done",
+        "pending": "Pending",
+        "blocked": "Blocked"
+      }
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "loginTitle": "Login",
+    "loginSubtitle": "Enter your credentials"
+  },
+  "meeting": {
+    "title": "1:1 Meeting",
+    "retrospective": "Retrospective",
+    "planning": "Planning",
+    "actionItems": "Action Items",
+    "addActionItem": "Add Item",
+    "pulse": "Weekly Pulse",
+    "blocks": {
+      "a": {
+        "title": "Block A: Operational",
+        "timeDistribution": "Time Distribution",
+        "execution": "Execution",
+        "meetings": "Meetings",
+        "resolution": "Problem Resolution",
+        "blockers": "Blockers",
+        "blockersLevel": "Blocker Level",
+        "blockersTags": "Blocker Tags",
+        "toolAdequacy": "Tool Adequacy",
+        "priorityClarity": "Priority Clarity"
+      },
+      "b": {
+        "title": "Block B: Strategy",
+        "goalConnection": "Goal Connection",
+        "autonomy": "Autonomy",
+        "innovation": "Innovation"
+      },
+      "c": {
+        "title": "Block C: Human Dynamics",
+        "psychologicalSafety": "Psychological Safety",
+        "collaborationFriction": "Collaboration Friction",
+        "recognition": "Recognition"
+      },
+      "d": {
+        "title": "Block D: Development",
+        "intellectualChallenge": "Intellectual Challenge",
+        "skill": "Skill",
+        "challenge": "Challenge",
+        "strengthsUtilization": "Strengths Utilization",
+        "activeLearning": "Active Learning",
+        "mentalHealth": "Mental Health",
+        "biweeklyFocus": "Biweekly Focus"
+      }
+    },
+    "status": {
+      "done": "Done",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    },
+    "blockersLevel": {
+      "green": "Green - No blockers",
+      "yellow": "Yellow - Some blockers",
+      "red": "Red - Critical blockers"
+    },
+    "recognition": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "annualReport": "Annual Report",
+    "teamOverview": "Team Overview",
+    "trends": "Trends"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "unauthorized": "You don't have permission to access this resource.",
+    "notFound": "Resource not found.",
+    "networkError": "Connection error. Check your internet."
+  }
+}

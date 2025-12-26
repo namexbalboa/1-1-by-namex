@@ -1,0 +1,97 @@
+{
+  "common": {
+    "welcome": "Bienvenido",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "logout": "Salir",
+    "language": "Idioma"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loginTitle": "Inicio de sesión",
+    "loginSubtitle": "Ingrese sus credenciales"
+  },
+  "meeting": {
+    "title": "Reunión 1:1",
+    "retrospective": "Retrospectiva",
+    "planning": "Planificación",
+    "actionItems": "Elementos de Acción",
+    "addActionItem": "Agregar Elemento",
+    "pulse": "Pulso Semanal",
+    "blocks": {
+      "a": {
+        "title": "Bloque A: Operacional",
+        "timeDistribution": "Distribución del Tiempo",
+        "execution": "Ejecución",
+        "meetings": "Reuniones",
+        "resolution": "Resolución de Problemas",
+        "blockers": "Bloqueadores",
+        "blockersLevel": "Nivel de Bloqueo",
+        "blockersTags": "Etiquetas de Bloqueadores",
+        "toolAdequacy": "Adecuación de Herramientas",
+        "priorityClarity": "Claridad de Prioridades"
+      },
+      "b": {
+        "title": "Bloque B: Estrategia",
+        "goalConnection": "Conexión con Objetivos",
+        "autonomy": "Autonomía",
+        "innovation": "Innovación"
+      },
+      "c": {
+        "title": "Bloque C: Dinámica Humana",
+        "psychologicalSafety": "Seguridad Psicológica",
+        "collaborationFriction": "Fricción en la Colaboración",
+        "recognition": "Reconocimiento"
+      },
+      "d": {
+        "title": "Bloque D: Desarrollo",
+        "intellectualChallenge": "Desafío Intelectual",
+        "skill": "Habilidad",
+        "challenge": "Desafío",
+        "strengthsUtilization": "Utilización de Fortalezas",
+        "activeLearning": "Aprendizaje Activo",
+        "mentalHealth": "Salud Mental",
+        "biweeklyFocus": "Enfoque Quincenal"
+      }
+    },
+    "status": {
+      "done": "Completado",
+      "pending": "Pendiente",
+      "blocked": "Bloqueado"
+    },
+    "blockersLevel": {
+      "green": "Verde - Sin bloqueos",
+      "yellow": "Amarillo - Algunos bloqueos",
+      "red": "Rojo - Bloqueos críticos"
+    },
+    "recognition": {
+      "low": "Bajo",
+      "medium": "Medio",
+      "high": "Alto"
+    }
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "overview": "Resumen",
+    "annualReport": "Informe Anual",
+    "teamOverview": "Resumen del Equipo",
+    "trends": "Tendencias"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "unauthorized": "No tienes permiso para acceder a este recurso.",
+    "notFound": "Recurso no encontrado.",
+    "networkError": "Error de conexión. Verifica tu internet."
+  }
+}

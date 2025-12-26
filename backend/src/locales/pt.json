@@ -1,0 +1,77 @@
+{
+  "errors": {
+    "validation": {
+      "required": "Campo obrigatório",
+      "email": "Email inválido",
+      "min": "Valor mínimo é {min}",
+      "max": "Valor máximo é {max}",
+      "enum": "Valor deve ser um dos seguintes: {values}"
+    },
+    "auth": {
+      "unauthorized": "Não autorizado",
+      "forbidden": "Acesso negado",
+      "invalidToken": "Token inválido"
+    },
+    "tenant": {
+      "notFound": "Empresa não encontrada",
+      "alreadyExists": "Empresa com este nome já existe"
+    },
+    "collaborator": {
+      "notFound": "Colaborador não encontrado",
+      "emailExists": "Colaborador com este email já existe",
+      "uidExists": "Colaborador com este Firebase UID já existe",
+      "managerNotFound": "Gerente não encontrado",
+      "invalidManager": "O usuário especificado não é um gerente"
+    },
+    "meeting": {
+      "journeyNotFound": "Jornada não encontrada",
+      "journeyExists": "Jornada já existe para este colaborador e ano",
+      "meetingNotFound": "Reunião não encontrada",
+      "meetingExists": "Reunião com este número já existe na jornada"
+    }
+  },
+  "success": {
+    "created": "Criado com sucesso",
+    "updated": "Atualizado com sucesso",
+    "deleted": "Removido com sucesso"
+  },
+  "meeting": {
+    "blocks": {
+      "a": {
+        "title": "Operacional",
+        "timeDistribution": "Distribuição de Tempo",
+        "blockers": "Bloqueadores",
+        "toolAdequacy": "Adequação das Ferramentas",
+        "priorityClarity": "Clareza das Prioridades"
+      },
+      "b": {
+        "title": "Estratégia",
+        "goalConnection": "Conexão com a Meta",
+        "autonomy": "Autonomia Percebida",
+        "innovation": "Inovação"
+      },
+      "c": {
+        "title": "Dinâmica Humana",
+        "psychologicalSafety": "Segurança Psicológica",
+        "collaborationFriction": "Fricção na Colaboração",
+        "recognition": "Reconhecimento"
+      },
+      "d": {
+        "title": "Desenvolvimento",
+        "intellectualChallenge": "Desafio Intelectual",
+        "strengthsUtilization": "Utilização de Pontos Fortes",
+        "activeLearning": "Aprendizado Ativo",
+        "mentalHealth": "Saúde Mental",
+        "biweeklyFocus": "Foco Quinzenal"
+      }
+    },
+    "actionItems": {
+      "title": "Itens de Ação",
+      "status": {
+        "done": "Feito",
+        "pending": "Pendente",
+        "blocked": "Bloqueado"
+      }
+    }
+  }
+}

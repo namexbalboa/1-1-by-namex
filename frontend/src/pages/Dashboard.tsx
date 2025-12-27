@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Calendar, TrendingUp, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 export function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { collaborator, isManager, signOut } = useAuth();
+  const { collaborator, isManager } = useAuth();
 
   const currentYear = new Date().getFullYear();
 
@@ -22,22 +22,8 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-primary">{t('dashboard.title')}</h1>
-            <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <Button variant="destructive" onClick={signOut}>
-                {t('common.logout')}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Welcome Section */}
           <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
@@ -171,7 +157,7 @@ export function Dashboard() {
             </div>
           </Card>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

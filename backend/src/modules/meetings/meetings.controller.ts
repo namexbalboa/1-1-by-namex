@@ -41,6 +41,11 @@ export class MeetingsController {
     return this.meetingsService.findJourneysByManager(managerId);
   }
 
+  @Get('journeys/collaborator/:collaboratorId')
+  findJourneysByCollaborator(@Param('collaboratorId') collaboratorId: string) {
+    return this.meetingsService.findJourneysByCollaborator(collaboratorId);
+  }
+
   // Meeting endpoints
   @Post('journeys/:journeyId/meetings')
   @HttpCode(HttpStatus.CREATED)

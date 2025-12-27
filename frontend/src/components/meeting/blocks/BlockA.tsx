@@ -17,12 +17,56 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
   const { t } = useTranslation();
 
   const updateTimeDistribution = (field: keyof BlockAType['timeDistribution'], value: number) => {
+    const current = {
+      execution: data.timeDistribution?.execution || 33,
+      meetings: data.timeDistribution?.meetings || 33,
+      resolution: data.timeDistribution?.resolution || 34,
+    };
+
+    // Garantir que o valor esteja entre 0 e 100
+    const newValue = Math.max(0, Math.min(100, value));
+
+    // Atualizar o campo sendo modificado
+    const updated = { ...current, [field]: newValue };
+
+    // Calcular quanto sobrou para distribuir
+    const remaining = 100 - newValue;
+
+    // Pegar os outros campos
+    const otherFields = (Object.keys(current) as Array<keyof typeof current>)
+      .filter(key => key !== field);
+
+    // Calcular a proporção atual dos outros campos
+    const otherFieldsTotal = otherFields.reduce((sum, key) => sum + current[key], 0);
+
+    // Redistribuir proporcionalmente entre os outros campos
+    if (otherFieldsTotal > 0 && remaining > 0) {
+      otherFields.forEach(key => {
+        const proportion = current[key] / otherFieldsTotal;
+        updated[key] = Math.round(remaining * proportion);
+      });
+
+      // Ajustar arredondamento para somar exatamente 100
+      const newTotal = Object.values(updated).reduce((sum, val) => sum + val, 0);
+      if (newTotal !== 100) {
+        updated[otherFields[0]] += (100 - newTotal);
+      }
+    } else if (remaining > 0) {
+      // Se os outros campos estavam em 0, dividir igualmente
+      const perField = Math.floor(remaining / otherFields.length);
+      otherFields.forEach((key, idx) => {
+        updated[key] = idx === 0 ? remaining - (perField * (otherFields.length - 1)) : perField;
+      });
+    } else {
+      // Se não sobrou nada, zerar os outros
+      otherFields.forEach(key => {
+        updated[key] = 0;
+      });
+    }
+
     onChange({
       ...data,
-      timeDistribution: {
-        ...data.timeDistribution!,
-        [field]: value,
-      },
+      timeDistribution: updated,
     });
   };
 
@@ -85,59 +129,117 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
             </p>
           )}
 
-          <div className="space-y-4">
-            {/* Execution */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>{t('meeting.blocks.a.execution')}</Label>
-                <Badge variant="outline">{data.timeDistribution?.execution || 0}%</Badge>
+          {/* Visual Distribution Bar */}
+          <div className="w-full h-8 flex rounded-lg overflow-hidden shadow-inner border-2 border-border">
+            {data.timeDistribution?.execution! > 0 && (
+              <div
+                className="bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
+                style={{ width: `${data.timeDistribution?.execution || 0}%` }}
+              >
+                {data.timeDistribution?.execution! >= 10 && `${data.timeDistribution?.execution}%`}
               </div>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                value={data.timeDistribution?.execution || 0}
-                onChange={(e) =>
-                  updateTimeDistribution('execution', Number(e.target.value))
-                }
+            )}
+            {data.timeDistribution?.meetings! > 0 && (
+              <div
+                className="bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
+                style={{ width: `${data.timeDistribution?.meetings || 0}%` }}
+              >
+                {data.timeDistribution?.meetings! >= 10 && `${data.timeDistribution?.meetings}%`}
+              </div>
+            )}
+            {data.timeDistribution?.resolution! > 0 && (
+              <div
+                className="bg-gradient-to-r from-warning to-warning/80 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
+                style={{ width: `${data.timeDistribution?.resolution || 0}%` }}
+              >
+                {data.timeDistribution?.resolution! >= 10 && `${data.timeDistribution?.resolution}%`}
+              </div>
+            )}
+            {totalTime < 100 && (
+              <div
+                className="bg-muted flex items-center justify-center text-xs text-muted-foreground transition-all duration-300"
+                style={{ width: `${100 - totalTime}%` }}
+              >
+                {100 - totalTime >= 10 && `${100 - totalTime}%`}
+              </div>
+            )}
+          </div>
+
+
+          <div className="space-y-6">
+            {/* Execution */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-primary to-primary/80 flex-shrink-0"></div>
+                  <Label className="text-base font-medium">{t('meeting.blocks.a.execution')}</Label>
+                </div>
+                <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
+                  {data.timeDistribution?.execution || 33}%
+                </Badge>
+              </div>
+              <Slider
+                value={[data.timeDistribution?.execution || 33]}
+                onValueChange={([value]) => updateTimeDistribution('execution', value)}
+                min={0}
+                max={100}
+                step={1}
                 disabled={readonly}
+                className="cursor-pointer"
               />
+              <p className="text-xs text-muted-foreground">
+                Tempo executando tarefas planejadas e desenvolvimento
+              </p>
             </div>
 
             {/* Meetings */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>{t('meeting.blocks.a.meetings')}</Label>
-                <Badge variant="outline">{data.timeDistribution?.meetings || 0}%</Badge>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-accent to-accent/80 flex-shrink-0"></div>
+                  <Label className="text-base font-medium">{t('meeting.blocks.a.meetings')}</Label>
+                </div>
+                <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
+                  {data.timeDistribution?.meetings || 33}%
+                </Badge>
               </div>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                value={data.timeDistribution?.meetings || 0}
-                onChange={(e) =>
-                  updateTimeDistribution('meetings', Number(e.target.value))
-                }
+              <Slider
+                value={[data.timeDistribution?.meetings || 33]}
+                onValueChange={([value]) => updateTimeDistribution('meetings', value)}
+                min={0}
+                max={100}
+                step={1}
                 disabled={readonly}
+                className="cursor-pointer"
               />
+              <p className="text-xs text-muted-foreground">
+                Tempo em reuniões, alinhamentos e cerimônias
+              </p>
             </div>
 
             {/* Resolution */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>{t('meeting.blocks.a.resolution')}</Label>
-                <Badge variant="outline">{data.timeDistribution?.resolution || 0}%</Badge>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-warning to-warning/80 flex-shrink-0"></div>
+                  <Label className="text-base font-medium">{t('meeting.blocks.a.resolution')}</Label>
+                </div>
+                <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
+                  {data.timeDistribution?.resolution || 34}%
+                </Badge>
               </div>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                value={data.timeDistribution?.resolution || 0}
-                onChange={(e) =>
-                  updateTimeDistribution('resolution', Number(e.target.value))
-                }
+              <Slider
+                value={[data.timeDistribution?.resolution || 34]}
+                onValueChange={([value]) => updateTimeDistribution('resolution', value)}
+                min={0}
+                max={100}
+                step={1}
                 disabled={readonly}
+                className="cursor-pointer"
               />
+              <p className="text-xs text-muted-foreground">
+                Tempo apagando incêndios e resolvendo imprevistos
+              </p>
             </div>
           </div>
         </div>

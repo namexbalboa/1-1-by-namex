@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Check } from 'lucide-react';
+import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -97,9 +98,8 @@ export function Planning() {
   const allBlocksComplete = completedBlocks.size === 4;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
+    <Layout>
+      <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -123,10 +123,9 @@ export function Planning() {
             </Button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Introduction Card */}
           <Card className="p-6 bg-primary/5 border-primary/20">
@@ -148,8 +147,8 @@ export function Planning() {
                   {['blockA', 'blockB', 'blockC', 'blockD'].map((block) => (
                     <div
                       key={block}
-                      className={`w-3 h-3 rounded-full ${
-                        isBlockComplete(block) ? 'bg-secondary' : 'bg-muted'
+                      className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                        isBlockComplete(block) ? 'bg-success shadow-md shadow-success/30' : 'bg-muted'
                       }`}
                     />
                   ))}
@@ -164,29 +163,49 @@ export function Planning() {
           {/* Blocks Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="blockA" className="relative">
-                {isBlockComplete('blockA') && (
-                  <Check className="w-4 h-4 absolute top-1 right-1 text-secondary" />
-                )}
-                Bloco A
+              <TabsTrigger
+                value="blockA"
+                className={`relative ${isBlockComplete('blockA') ? 'bg-success/10 data-[state=active]:bg-success/20' : ''}`}
+              >
+                <span className="flex items-center gap-2">
+                  {isBlockComplete('blockA') && (
+                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                  )}
+                  Bloco A
+                </span>
               </TabsTrigger>
-              <TabsTrigger value="blockB" className="relative">
-                {isBlockComplete('blockB') && (
-                  <Check className="w-4 h-4 absolute top-1 right-1 text-secondary" />
-                )}
-                Bloco B
+              <TabsTrigger
+                value="blockB"
+                className={`relative ${isBlockComplete('blockB') ? 'bg-success/10 data-[state=active]:bg-success/20' : ''}`}
+              >
+                <span className="flex items-center gap-2">
+                  {isBlockComplete('blockB') && (
+                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                  )}
+                  Bloco B
+                </span>
               </TabsTrigger>
-              <TabsTrigger value="blockC" className="relative">
-                {isBlockComplete('blockC') && (
-                  <Check className="w-4 h-4 absolute top-1 right-1 text-secondary" />
-                )}
-                Bloco C
+              <TabsTrigger
+                value="blockC"
+                className={`relative ${isBlockComplete('blockC') ? 'bg-success/10 data-[state=active]:bg-success/20' : ''}`}
+              >
+                <span className="flex items-center gap-2">
+                  {isBlockComplete('blockC') && (
+                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                  )}
+                  Bloco C
+                </span>
               </TabsTrigger>
-              <TabsTrigger value="blockD" className="relative">
-                {isBlockComplete('blockD') && (
-                  <Check className="w-4 h-4 absolute top-1 right-1 text-secondary" />
-                )}
-                Bloco D
+              <TabsTrigger
+                value="blockD"
+                className={`relative ${isBlockComplete('blockD') ? 'bg-success/10 data-[state=active]:bg-success/20' : ''}`}
+              >
+                <span className="flex items-center gap-2">
+                  {isBlockComplete('blockD') && (
+                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                  )}
+                  Bloco D
+                </span>
               </TabsTrigger>
             </TabsList>
 
@@ -229,7 +248,7 @@ export function Planning() {
                 <Button variant="outline" onClick={() => setActiveTab('blockC')}>
                   Voltar
                 </Button>
-                <Button onClick={() => markBlockComplete('blockD')} className="bg-secondary">
+                <Button onClick={() => markBlockComplete('blockD')} variant="success">
                   <Check className="w-4 h-4 mr-2" />
                   Marcar como Completo
                 </Button>
@@ -239,15 +258,18 @@ export function Planning() {
 
           {/* Final Save Button */}
           {allBlocksComplete && (
-            <Card className="p-6 bg-secondary/10 border-secondary">
+            <Card className="p-6 bg-success/10 border-success/30">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-lg">✅ Todos os blocos completos!</h3>
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    <Check className="w-6 h-6 text-success" strokeWidth={3} />
+                    Todos os blocos completos!
+                  </h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     Você pode finalizar a reunião agora.
                   </p>
                 </div>
-                <Button onClick={handleSave} disabled={saving} size="lg" className="bg-secondary">
+                <Button onClick={handleSave} disabled={saving} size="lg" variant="success">
                   <Save className="w-4 h-4 mr-2" />
                   {saving ? t('common.loading') : t('common.finish')}
                 </Button>
@@ -255,7 +277,7 @@ export function Planning() {
             </Card>
           )}
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

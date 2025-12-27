@@ -51,10 +51,10 @@ export function PulseHistory({
     return (sum / pulseHistory.length).toFixed(1);
   };
 
-  const getPulseColor = (value: number) => {
-    if (value >= 4) return 'text-secondary';
-    if (value >= 3) return 'text-primary';
-    return 'text-destructive';
+  const getPulseColor = (value: number): 'success' | 'default' | 'destructive' => {
+    if (value >= 4) return 'success';
+    if (value >= 3) return 'default';
+    return 'destructive';
   };
 
   const getPulseEmoji = (value: number) => {
@@ -68,7 +68,7 @@ export function PulseHistory({
         <h3 className="text-lg font-semibold">{t('meeting.pulse')}</h3>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Média:</span>
-          <Badge className={`${getPulseColor(Number(getAveragePulse()))}`}>
+          <Badge variant={getPulseColor(Number(getAveragePulse()))}>
             {getAveragePulse()} {getPulseEmoji(Math.round(Number(getAveragePulse())))}
           </Badge>
         </div>
@@ -95,7 +95,7 @@ export function PulseHistory({
                   Semana {week}
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className={`text-2xl ${getPulseColor(value)}`}>
+                  <span className="text-2xl">
                     {getPulseEmoji(value)}
                   </span>
                   <Badge variant="outline" className="w-8 text-center">

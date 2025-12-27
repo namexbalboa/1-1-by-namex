@@ -98,6 +98,17 @@ export const apiClient = {
       }),
   },
 
+  // Auth
+  auth: {
+    register: (data: {
+      name: string;
+      email: string;
+      password: string;
+      companyName: string;
+      preferredLanguage?: string;
+    }) => api.post('/auth/register', data),
+  },
+
   // Health check
   health: () => api.get('/health'),
 };

@@ -4,7 +4,10 @@
       "Bash(npx shadcn@latest add button)",
       "Bash(npx shadcn@latest add:*)",
       "Bash(npm install:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "Bash(npx nest generate:*)"
     ]
   }
 }

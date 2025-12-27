@@ -81,12 +81,68 @@
       "high": "Alto"
     }
   },
+  "sidebar": {
+    "dashboard": "Panel de Control",
+    "collaborators": "Colaboradores",
+    "meetings": "Reuniones",
+    "analytics": "Analíticas",
+    "settings": "Configuración"
+  },
   "dashboard": {
     "title": "Panel de Control",
     "overview": "Resumen",
     "annualReport": "Informe Anual",
     "teamOverview": "Resumen del Equipo",
     "trends": "Tendencias"
+  },
+  "collaborators": {
+    "title": "Colaboradores",
+    "addCollaborator": "Agregar Colaborador",
+    "editCollaborator": "Editar Colaborador",
+    "deleteCollaborator": "Desactivar Colaborador",
+    "collaboratorDetails": "Detalles del Colaborador",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "role": "Rol",
+    "manager": "Gestor",
+    "jobRole": "Puesto/Función",
+    "department": "Departamento",
+    "preferredLanguage": "Idioma Preferido",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "actions": "Acciones",
+    "meetingHistory": "Historial de Reuniones",
+    "noMeetings": "Aún no hay reuniones",
+    "roles": {
+      "manager": "Gestor",
+      "employee": "Empleado"
+    },
+    "confirmDelete": "¿Está seguro de que desea desactivar este colaborador?",
+    "deleteSuccess": "Colaborador desactivado con éxito",
+    "createSuccess": "Colaborador creado con éxito",
+    "updateSuccess": "Colaborador actualizado con éxito"
+  },
+  "settings": {
+    "title": "Configuración",
+    "description": "Administre funciones, departamentos y otros parámetros de su empresa",
+    "jobRoles": {
+      "title": "Funciones/Puestos",
+      "add": "Agregar Función",
+      "name": "Nombre de la Función",
+      "description": "Descripción",
+      "empty": "Aún no hay funciones registradas",
+      "confirmDelete": "¿Está seguro de que desea eliminar esta función?"
+    },
+    "departments": {
+      "title": "Departamentos",
+      "add": "Agregar Departamento",
+      "name": "Nombre del Departamento",
+      "description": "Descripción",
+      "manager": "Gestor Responsable",
+      "empty": "Aún no hay departamentos registrados",
+      "confirmDelete": "¿Está seguro de que desea eliminar este departamento?"
+    }
   },
   "errors": {
     "generic": "Algo salió mal. Inténtalo de nuevo.",

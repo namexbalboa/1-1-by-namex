@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
+import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -60,9 +61,8 @@ export function Retrospective() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
+    <Layout>
+      <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -86,10 +86,9 @@ export function Retrospective() {
             </Button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Introduction Card */}
           <Card className="p-6 bg-primary/5 border-primary/20">
@@ -137,7 +136,7 @@ export function Retrospective() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

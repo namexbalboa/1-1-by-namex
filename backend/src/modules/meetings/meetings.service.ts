@@ -55,6 +55,15 @@ export class MeetingsService {
       .exec();
   }
 
+  async findJourneysByCollaborator(collaboratorId: string): Promise<MeetingJourney[]> {
+    return this.meetingJourneyModel
+      .find({ collaboratorId })
+      .populate('tenantId', 'name logo')
+      .populate('managerId', 'name email')
+      .sort({ year: -1 })
+      .exec();
+  }
+
   async addMeeting(
     journeyId: string,
     createMeetingDto: CreateMeetingDto,

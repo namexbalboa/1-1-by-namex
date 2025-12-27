@@ -34,14 +34,14 @@ export function ActionItemsList({ items, onChange, readonly = false }: ActionIte
   };
 
   const getStatusBadge = (status: ActionItemStatus) => {
-    const variants = {
-      done: 'bg-secondary text-secondary-foreground',
-      pending: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400',
-      blocked: 'bg-destructive/20 text-destructive',
+    const variants: Record<ActionItemStatus, 'secondary' | 'warning' | 'destructive'> = {
+      done: 'secondary',
+      pending: 'warning',
+      blocked: 'destructive',
     };
 
     return (
-      <Badge className={variants[status]}>
+      <Badge variant={variants[status]}>
         {t(`meeting.status.${status}`)}
       </Badge>
     );

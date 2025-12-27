@@ -8,6 +8,9 @@ export class Tenant {
   @Prop({ required: true, unique: true })
   name: string;
 
+  @Prop({ unique: true, sparse: true })
+  emailDomain: string;
+
   @Prop()
   logo: string;
 
@@ -25,4 +28,5 @@ export const TenantSchema = SchemaFactory.createForClass(Tenant);
 
 // Indexes
 TenantSchema.index({ name: 1 });
+TenantSchema.index({ emailDomain: 1 });
 TenantSchema.index({ isActive: 1 });

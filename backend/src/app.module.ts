@@ -10,6 +10,7 @@ import { CollaboratorsModule } from './modules/collaborators/collaborators.modul
 import { MeetingsModule } from './modules/meetings/meetings.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     I18nModule.forRoot({
       fallbackLanguage: 'pt',
       loaderOptions: {
-        path: path.join(__dirname, '/locales/'),
+        path: path.join(process.cwd(), 'src/locales/'),
         watch: true,
       },
       resolvers: [AcceptLanguageResolver],
@@ -44,6 +45,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     CollaboratorsModule,
     MeetingsModule,
     AnalyticsModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

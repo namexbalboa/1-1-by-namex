@@ -23,6 +23,12 @@ export class Collaborator {
   @Prop({ type: Types.ObjectId, ref: 'Collaborator' })
   managerId: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'JobRole' })
+  jobRoleId: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Department' })
+  departmentId: Types.ObjectId;
+
   @Prop({ type: String, enum: ['pt', 'en', 'es'], default: 'pt' })
   preferredLanguage: string;
 

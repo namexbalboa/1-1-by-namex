@@ -146,7 +146,7 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
                 </p>
               </div>
               {flowState.state === 'Flow' && (
-                <Badge className="bg-secondary">Ideal!</Badge>
+                <Badge variant="success">Ideal!</Badge>
               )}
             </div>
           </div>

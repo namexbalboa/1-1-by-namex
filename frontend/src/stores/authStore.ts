@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       collaborator: null,
       token: null,
-      loading: false,
+      loading: true,
       error: null,
 
       setUser: (user) => set({ user }),

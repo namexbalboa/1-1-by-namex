@@ -81,12 +81,68 @@
       "high": "High"
     }
   },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "collaborators": "Collaborators",
+    "meetings": "Meetings",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
   "dashboard": {
     "title": "Dashboard",
     "overview": "Overview",
     "annualReport": "Annual Report",
     "teamOverview": "Team Overview",
     "trends": "Trends"
+  },
+  "collaborators": {
+    "title": "Collaborators",
+    "addCollaborator": "Add Collaborator",
+    "editCollaborator": "Edit Collaborator",
+    "deleteCollaborator": "Deactivate Collaborator",
+    "collaboratorDetails": "Collaborator Details",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "manager": "Manager",
+    "jobRole": "Job Role",
+    "department": "Department",
+    "preferredLanguage": "Preferred Language",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "actions": "Actions",
+    "meetingHistory": "Meeting History",
+    "noMeetings": "No meetings yet",
+    "roles": {
+      "manager": "Manager",
+      "employee": "Employee"
+    },
+    "confirmDelete": "Are you sure you want to deactivate this collaborator?",
+    "deleteSuccess": "Collaborator deactivated successfully",
+    "createSuccess": "Collaborator created successfully",
+    "updateSuccess": "Collaborator updated successfully"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage job roles, departments and other company parameters",
+    "jobRoles": {
+      "title": "Job Roles",
+      "add": "Add Job Role",
+      "name": "Role Name",
+      "description": "Description",
+      "empty": "No job roles registered yet",
+      "confirmDelete": "Are you sure you want to remove this job role?"
+    },
+    "departments": {
+      "title": "Departments",
+      "add": "Add Department",
+      "name": "Department Name",
+      "description": "Description",
+      "manager": "Responsible Manager",
+      "empty": "No departments registered yet",
+      "confirmDelete": "Are you sure you want to remove this department?"
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

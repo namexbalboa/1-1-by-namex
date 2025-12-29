@@ -73,5 +73,31 @@
         "blocked": "Blocked"
       }
     }
+  },
+  "email": {
+    "welcome": {
+      "subject": "Welcome to the team!",
+      "greeting": "Hello {name},",
+      "intro": "Your account has been created successfully. Here are your login credentials:",
+      "credentials": {
+        "label": "Login Credentials",
+        "email": "Email",
+        "password": "Temporary Password",
+        "loginUrl": "Login URL"
+      },
+      "loginButton": "Access Platform",
+      "instructions": "Please change your password on first login.",
+      "security": "For security reasons, do not share these credentials.",
+      "footer": "Best regards,<br>1:1 Meetings Team"
+    },
+    "meetingConfirmation": {
+      "subject": "1:1 Meeting Scheduled",
+      "greeting": "Hello",
+      "intro": "Your 1:1 meeting has been successfully scheduled.",
+      "dateLabel": "Date",
+      "timeLabel": "Time",
+      "instructions": "You will receive a reminder closer to the meeting date.",
+      "footer": "Best regards,<br>1:1 Meetings Team"
+    }
   }
 }

@@ -23,7 +23,22 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
       throw new UnauthorizedException('Invalid Firebase token');
     }
 
-    return firebaseUser;
+    // Fetch collaborator data to include role and other info
+    const collaborator = await this.authService.getCollaboratorByFirebaseUid(firebaseUser.uid);
+
+    if (!collaborator) {
+      throw new UnauthorizedException('Collaborator not found or inactive');
+    }
+
+    // Return user object with collaborator data (including role)
+    return {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      collaboratorId: collaborator._id.toString(),
+      role: collaborator.role,
+      tenantId: collaborator.tenantId,
+      name: collaborator.name,
+    };
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

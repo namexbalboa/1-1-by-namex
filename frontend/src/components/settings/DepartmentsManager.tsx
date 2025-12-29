@@ -50,12 +50,20 @@ export function DepartmentsManager() {
   const loadData = async () => {
     try {
       setLoading(true);
+
+      // Extract tenantId string (in case it's populated as an object)
+      const tenantId = collaborator?.tenantId
+        ? typeof collaborator.tenantId === 'string'
+          ? collaborator.tenantId
+          : collaborator.tenantId._id
+        : undefined;
+
       const [deptResponse, managersResponse] = await Promise.all([
         api.get('/settings/departments', {
-          params: { tenantId: collaborator?.tenantId }
+          params: { tenantId }
         }),
         api.get('/collaborators', {
-          params: { tenantId: collaborator?.tenantId }
+          params: { tenantId }
         })
       ]);
 
@@ -71,19 +79,30 @@ export function DepartmentsManager() {
   const handleCreate = async () => {
     if (!formData.name.trim()) return;
 
+    if (!collaborator?.tenantId) {
+      alert('Erro: Tenant ID não encontrado');
+      return;
+    }
+
+    // Extract tenantId string (in case it's populated as an object)
+    const tenantId = typeof collaborator.tenantId === 'string'
+      ? collaborator.tenantId
+      : collaborator.tenantId._id;
+
     try {
       await api.post('/settings/departments', {
         name: formData.name,
         description: formData.description,
         managerId: formData.managerId || undefined,
-        tenantId: collaborator?.tenantId,
+        tenantId,
       });
       setFormData({ name: '', description: '', managerId: '' });
       setIsCreating(false);
       loadData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating department:', error);
-      alert('Erro ao criar departamento');
+      const errorMessage = error.response?.data?.message || error.message || 'Erro ao criar departamento';
+      alert(`Erro ao criar departamento: ${Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage}`);
     }
   };
 
@@ -176,14 +195,14 @@ export function DepartmentsManager() {
             <div>
               <Label htmlFor="new-manager">{t('settings.departments.manager')}</Label>
               <Select
-                value={formData.managerId}
-                onValueChange={(value) => setFormData({ ...formData, managerId: value })}
+                value={formData.managerId || 'none'}
+                onValueChange={(value) => setFormData({ ...formData, managerId: value === 'none' ? '' : value })}
               >
                 <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Selecione um gestor (opcional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum</SelectItem>
+                  <SelectItem value="none">Nenhum</SelectItem>
                   {managers.map((manager) => (
                     <SelectItem key={manager._id} value={manager._id}>
                       {manager.name}
@@ -194,7 +213,6 @@ export function DepartmentsManager() {
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCreate} size="sm">
-                <Save className="w-4 h-4 mr-2" />
                 {t('common.save')}
               </Button>
               <Button onClick={cancelEdit} variant="ghost" size="sm">
@@ -238,14 +256,14 @@ export function DepartmentsManager() {
                     {t('settings.departments.manager')}
                   </Label>
                   <Select
-                    value={formData.managerId}
-                    onValueChange={(value) => setFormData({ ...formData, managerId: value })}
+                    value={formData.managerId || 'none'}
+                    onValueChange={(value) => setFormData({ ...formData, managerId: value === 'none' ? '' : value })}
                   >
                     <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Selecione um gestor (opcional)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Nenhum</SelectItem>
+                      <SelectItem value="none">Nenhum</SelectItem>
                       {managers.map((manager) => (
                         <SelectItem key={manager._id} value={manager._id}>
                           {manager.name}
@@ -256,7 +274,6 @@ export function DepartmentsManager() {
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={() => handleUpdate(department._id)} size="sm">
-                    <Save className="w-4 h-4 mr-2" />
                     {t('common.save')}
                   </Button>
                   <Button onClick={cancelEdit} variant="ghost" size="sm">
@@ -280,19 +297,17 @@ export function DepartmentsManager() {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => startEdit(department)}
-                    variant="outline"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                   >
-                    <Edit className="w-4 h-4 mr-1" />
-                    {t('common.edit')}
+                    <Edit className="w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => handleDelete(department._id)}
-                    variant="destructive"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                   >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    {t('common.delete')}
+                    <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
                 </div>
               </div>

@@ -1,16 +1,19 @@
-import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as admin from 'firebase-admin';
 import { Tenant, TenantDocument } from '@/schemas/tenant.schema';
 import { Collaborator, CollaboratorDocument } from '@/schemas/collaborator.schema';
 import { RegisterDto } from './dto/register.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
     @InjectModel(Collaborator.name) private collaboratorModel: Model<CollaboratorDocument>,
+    private readonly emailService: EmailService,
   ) {}
 
   async validateFirebaseToken(token: string): Promise<admin.auth.DecodedIdToken | null> {
@@ -19,6 +22,19 @@ export class AuthService {
       return decodedToken;
     } catch (error) {
       console.error('Error validating Firebase token:', error);
+      return null;
+    }
+  }
+
+  async getCollaboratorByFirebaseUid(firebaseUid: string): Promise<CollaboratorDocument | null> {
+    try {
+      const collaborator = await this.collaboratorModel
+        .findOne({ firebaseUid, isActive: true })
+        .populate('tenantId')
+        .exec();
+      return collaborator;
+    } catch (error) {
+      console.error('Error getting collaborator by Firebase UID:', error);
       return null;
     }
   }
@@ -118,5 +134,117 @@ export class AuthService {
       }
       throw new InternalServerErrorException('Failed to register user');
     }
+  }
+
+  async createUser(createUserDto: CreateUserDto) {
+    try {
+      // 1. Check if email already exists in our database
+      const existingCollaborator = await this.collaboratorModel.findOne({
+        email: createUserDto.email,
+      });
+
+      if (existingCollaborator) {
+        throw new ConflictException('Email already registered in the system');
+      }
+
+      // 2. Validate tenant exists
+      const tenant = await this.tenantModel.findById(createUserDto.tenantId);
+      if (!tenant) {
+        throw new NotFoundException('Tenant not found');
+      }
+
+      // 3. Create user in Firebase Authentication
+      let firebaseUser: admin.auth.UserRecord;
+      try {
+        firebaseUser = await admin.auth().createUser({
+          email: createUserDto.email,
+          password: createUserDto.password,
+          displayName: createUserDto.name,
+          emailVerified: false,
+        });
+      } catch (firebaseError: any) {
+        if (firebaseError.code === 'auth/email-already-exists') {
+          throw new ConflictException('Email already registered in Firebase');
+        }
+        throw new InternalServerErrorException(`Firebase error: ${firebaseError.message}`);
+      }
+
+      // 4. Create collaborator in database with specified role
+      const collaborator = await this.collaboratorModel.create({
+        tenantId: createUserDto.tenantId,
+        firebaseUid: firebaseUser.uid,
+        name: createUserDto.name,
+        email: createUserDto.email,
+        role: createUserDto.role,
+        preferredLanguage: createUserDto.preferredLanguage || tenant.defaultLanguage,
+        jobRoleId: createUserDto.jobRoleId || undefined,
+        departmentId: createUserDto.departmentId || undefined,
+        managerId: createUserDto.managerId || undefined,
+        isActive: true,
+      });
+
+      // 5. Send welcome email (fire-and-forget pattern)
+      this.emailService
+        .sendWelcomeEmail(
+          collaborator.name,
+          collaborator.email,
+          createUserDto.password,
+          collaborator.preferredLanguage,
+        )
+        .then((result) => {
+          if (!result.success) {
+            console.error(
+              `Failed to send welcome email to ${collaborator.email}:`,
+              result.error,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error(
+            `Unexpected error sending welcome email to ${collaborator.email}:`,
+            error,
+          );
+        });
+
+      return {
+        message: 'User created successfully',
+        user: {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName,
+        },
+        collaborator: {
+          id: collaborator._id,
+          name: collaborator.name,
+          email: collaborator.email,
+          role: collaborator.role,
+        },
+      };
+    } catch (error) {
+      // If we created Firebase user but failed to create collaborator, clean up
+      if (error instanceof ConflictException || error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to create user');
+    }
+  }
+
+  async getCollaborators(tenantId: string, role?: string): Promise<CollaboratorDocument[]> {
+    const query: any = { tenantId, isActive: true };
+
+    if (role) {
+      query.role = role;
+    } else {
+      // By default, return only employees (not managers)
+      query.role = 'employee';
+    }
+
+    return this.collaboratorModel
+      .find(query)
+      .populate('departmentId', 'name')
+      .populate('jobRoleId', 'title')
+      .populate('managerId', 'name email')
+      .select('name email departmentId jobRoleId managerId preferredLanguage')
+      .exec();
   }
 }

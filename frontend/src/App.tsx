@@ -2,13 +2,14 @@ import { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
+import { Toaster } from '@/components/ui/toaster';
 import { Login } from '@/pages/Login';
 import { Register } from '@/pages/Register';
 import { Dashboard } from '@/pages/Dashboard';
-import { Collaborators } from '@/pages/Collaborators';
-import { CollaboratorForm } from '@/pages/CollaboratorForm';
-import { CollaboratorDetails } from '@/pages/CollaboratorDetails';
+import { Meetings } from '@/pages/Meetings';
 import { Settings } from '@/pages/Settings';
+import { History } from '@/pages/History';
+import { HistoryDetails } from '@/pages/HistoryDetails';
 import { Retrospective } from '@/pages/meeting/Retrospective';
 import { Planning } from '@/pages/meeting/Planning';
 import '@/lib/i18n';
@@ -29,6 +30,14 @@ function AppContent() {
             }
           />
           <Route
+            path="/meetings"
+            element={
+              <PrivateRoute>
+                <Meetings />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/meeting/:journeyId/:meetingNumber/retrospective"
             element={
               <PrivateRoute>
@@ -45,48 +54,33 @@ function AppContent() {
             }
           />
           <Route
-            path="/collaborators"
-            element={
-              <PrivateRoute>
-                <Collaborators />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/collaborators/new"
-            element={
-              <PrivateRoute>
-                <CollaboratorForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/collaborators/:id"
-            element={
-              <PrivateRoute>
-                <CollaboratorDetails />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/collaborators/:id/edit"
-            element={
-              <PrivateRoute>
-                <CollaboratorForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/settings"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireManager={true}>
                 <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <PrivateRoute requireManager={true}>
+                <History />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/history/:collaboratorId/:year"
+            element={
+              <PrivateRoute requireManager={true}>
+                <HistoryDetails />
               </PrivateRoute>
             }
           />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Router>
+      <Toaster />
     </ThemeProvider>
   );
 }

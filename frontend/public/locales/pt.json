@@ -142,6 +142,16 @@
       "manager": "Gestor Responsável",
       "empty": "Nenhum departamento cadastrado ainda",
       "confirmDelete": "Tem certeza que deseja remover este departamento?"
+    },
+    "managers": {
+      "title": "Gestores",
+      "add": "Adicionar Gestor",
+      "name": "Nome",
+      "email": "E-mail",
+      "firebaseUid": "Firebase UID",
+      "language": "Idioma",
+      "empty": "Nenhum gestor cadastrado ainda",
+      "confirmDelete": "Tem certeza que deseja remover este gestor?"
     }
   },
   "errors": {

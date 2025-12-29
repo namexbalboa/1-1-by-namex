@@ -142,6 +142,16 @@
       "manager": "Responsible Manager",
       "empty": "No departments registered yet",
       "confirmDelete": "Are you sure you want to remove this department?"
+    },
+    "managers": {
+      "title": "Managers",
+      "add": "Add Manager",
+      "name": "Name",
+      "email": "Email",
+      "firebaseUid": "Firebase UID",
+      "language": "Language",
+      "empty": "No managers registered yet",
+      "confirmDelete": "Are you sure you want to remove this manager?"
     }
   },
   "errors": {

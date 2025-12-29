@@ -11,6 +11,7 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -38,6 +39,9 @@ import { SettingsModule } from './modules/settings/settings.module';
       },
       resolvers: [AcceptLanguageResolver],
     }),
+
+    // Email module (must be imported before feature modules)
+    EmailModule,
 
     // Feature modules
     AuthModule,

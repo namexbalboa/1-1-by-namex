@@ -2,13 +2,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
-  Users,
   Calendar,
-  BarChart3,
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
@@ -34,21 +33,15 @@ export function Sidebar({ className }: SidebarProps) {
       show: true,
     },
     {
-      icon: Users,
-      label: t('sidebar.collaborators'),
-      path: '/collaborators',
-      show: isManager,
-    },
-    {
       icon: Calendar,
       label: t('sidebar.meetings'),
       path: '/meetings',
       show: true,
     },
     {
-      icon: BarChart3,
-      label: t('sidebar.analytics'),
-      path: '/analytics',
+      icon: History,
+      label: 'Histórico',
+      path: '/history',
       show: isManager,
     },
     {

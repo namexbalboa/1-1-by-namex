@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-primary to-accent text-white shadow-md hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-accent before:to-primary before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 [&>*]:!text-white",
+        default: "bg-gradient-to-r from-primary to-secondary !text-white shadow-md hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
         destructive:
-          "bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground shadow-md hover:shadow-xl hover:shadow-destructive/25 hover:scale-[1.02] active:scale-[0.98] [&>*]:!text-destructive-foreground",
+          "bg-gradient-to-r from-destructive to-destructive/70 !text-white shadow-md hover:shadow-xl hover:shadow-destructive/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
         outline:
-          "border-2 border-primary/30 bg-background/50 backdrop-blur-sm text-foreground hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:border-transparent hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] [&>*]:hover:!text-white",
+          "bg-gradient-to-r from-primary to-secondary !text-white shadow-md hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
         secondary:
-          "bg-gradient-to-r from-secondary to-secondary/80 text-white shadow-md hover:shadow-xl hover:shadow-secondary/25 hover:scale-[1.02] active:scale-[0.98] [&>*]:!text-white",
-        ghost: "text-foreground hover:bg-gradient-to-r hover:from-primary hover:to-accent backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98] [&>*]:hover:!text-white",
+          "bg-gradient-to-r from-secondary to-primary !text-white shadow-md hover:shadow-xl hover:shadow-secondary/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
+        ghost: "bg-muted text-muted-foreground hover:bg-muted/80 transition-all duration-200",
         link: "text-primary underline-offset-4 hover:underline transition-colors",
-        success: "bg-gradient-to-r from-success to-success/80 text-success-foreground shadow-md hover:shadow-xl hover:shadow-success/25 hover:scale-[1.02] active:scale-[0.98] [&>*]:!text-success-foreground",
-        gradient: "bg-gradient-to-r from-primary via-accent to-secondary text-white shadow-lg hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] before:absolute before:inset-0 before:bg-gradient-to-r before:from-secondary before:via-accent before:to-primary before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-700 [&>*]:!text-white",
+        success: "bg-gradient-to-r from-success to-success/70 !text-white shadow-md hover:shadow-xl hover:shadow-success/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
+        gradient: "bg-gradient-to-r from-primary to-secondary !text-white shadow-lg hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 [&>*]:!text-white hover:!text-white [&_*]:!text-white",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -108,6 +108,12 @@ class Meeting {
   @Prop({ required: true })
   date: Date;
 
+  @Prop({ type: String, enum: ['scheduled', 'completed', 'cancelled'], default: 'scheduled' })
+  status: string;
+
+  @Prop({ type: Date })
+  completedAt: Date;
+
   @Prop({ type: [ActionItem], default: [] })
   actionItems: ActionItem[];
 

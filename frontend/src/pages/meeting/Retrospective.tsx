@@ -81,7 +81,6 @@ export function Retrospective() {
               </div>
             </div>
             <Button onClick={handleSave} disabled={saving}>
-              <Save className="w-4 h-4 mr-2" />
               {saving ? t('common.loading') : t('common.save')}
             </Button>
           </div>

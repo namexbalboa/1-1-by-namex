@@ -7,7 +7,16 @@
       "Bash(node:*)",
       "Bash(dir:*)",
       "Bash(curl:*)",
-      "Bash(npx nest generate:*)"
+      "Bash(npx nest generate:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)",
+      "Bash(if [ -f \"c:\\\\Users\\\\naama\\\\Documents\\\\governanca\\\\1-1-by-namex\\\\backend\\\\.env\" ])",
+      "Bash(then cat \"c:\\\\Users\\\\naama\\\\Documents\\\\governanca\\\\1-1-by-namex\\\\backend\\\\.env\")",
+      "Bash(else echo \"No .env file found\")",
+      "Bash(fi)",
+      "Bash(find:*)",
+      "Bash(timeout 10 npm run build:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

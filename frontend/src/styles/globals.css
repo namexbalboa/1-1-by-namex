@@ -11,8 +11,8 @@
     --primary-foreground: 0 0% 100%;
     --primary-hover: 235 85% 58%;
 
-    /* Secondary: Rosa ametista */
-    --secondary: 320 65% 75%; /* #E879DC - Rosa violeta suave */
+    /* Secondary: Verde esmeralda vibrante */
+    --secondary: 145 70% 55%; /* #2DD68A - Verde esmeralda */
     --secondary-foreground: 0 0% 100%;
 
     /* Accent: Turquesa celestial */
@@ -66,8 +66,8 @@
     --primary-foreground: 0 0% 100%;
     --primary-hover: 235 90% 65%;
 
-    /* Secondary: Rosa ametista vibrante */
-    --secondary: 320 70% 70%;
+    /* Secondary: Verde esmeralda vibrante */
+    --secondary: 145 75% 60%;
     --secondary-foreground: 0 0% 100%;
 
     /* Accent: Turquesa neon */
@@ -260,5 +260,61 @@
     box-shadow:
       0 8px 32px rgba(91, 127, 255, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* Força texto branco em botões com background colorido */
+  button[class*="bg-gradient"],
+  button[class*="bg-primary"],
+  button[class*="bg-secondary"],
+  button[class*="bg-accent"] {
+    color: white !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  button[class*="bg-gradient"] *,
+  button[class*="bg-primary"] *,
+  button[class*="bg-secondary"] *,
+  button[class*="bg-accent"] * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  button[class*="bg-gradient"]:hover,
+  button[class*="bg-primary"]:hover,
+  button[class*="bg-secondary"]:hover,
+  button[class*="bg-accent"]:hover {
+    color: white !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  button[class*="bg-gradient"]:hover *,
+  button[class*="bg-primary"]:hover *,
+  button[class*="bg-secondary"]:hover *,
+  button[class*="bg-accent"]:hover * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  /* SVG dentro de botões coloridos */
+  button[class*="bg-gradient"] svg,
+  button[class*="bg-primary"] svg,
+  button[class*="bg-secondary"] svg,
+  button[class*="bg-accent"] svg {
+    color: white !important;
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
+
+  button[class*="bg-gradient"]:hover svg,
+  button[class*="bg-primary"]:hover svg,
+  button[class*="bg-secondary"]:hover svg,
+  button[class*="bg-accent"]:hover svg {
+    color: white !important;
+    fill: currentColor !important;
+    stroke: currentColor !important;
   }
 }

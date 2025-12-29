@@ -32,8 +32,16 @@ export function JobRolesManager() {
   const loadJobRoles = async () => {
     try {
       setLoading(true);
+
+      // Extract tenantId string (in case it's populated as an object)
+      const tenantId = collaborator?.tenantId
+        ? typeof collaborator.tenantId === 'string'
+          ? collaborator.tenantId
+          : collaborator.tenantId._id
+        : undefined;
+
       const response = await api.get('/settings/job-roles', {
-        params: { tenantId: collaborator?.tenantId }
+        params: { tenantId }
       });
       setJobRoles(response.data);
     } catch (error) {
@@ -46,17 +54,28 @@ export function JobRolesManager() {
   const handleCreate = async () => {
     if (!formData.name.trim()) return;
 
+    if (!collaborator?.tenantId) {
+      alert('Erro: Tenant ID não encontrado');
+      return;
+    }
+
+    // Extract tenantId string (in case it's populated as an object)
+    const tenantId = typeof collaborator.tenantId === 'string'
+      ? collaborator.tenantId
+      : collaborator.tenantId._id;
+
     try {
       await api.post('/settings/job-roles', {
         ...formData,
-        tenantId: collaborator?.tenantId,
+        tenantId,
       });
       setFormData({ name: '', description: '' });
       setIsCreating(false);
       loadJobRoles();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating job role:', error);
-      alert('Erro ao criar função');
+      const errorMessage = error.response?.data?.message || error.message || 'Erro ao criar função';
+      alert(`Erro ao criar função: ${Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage}`);
     }
   };
 
@@ -140,7 +159,6 @@ export function JobRolesManager() {
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCreate} size="sm">
-                <Save className="w-4 h-4 mr-2" />
                 {t('common.save')}
               </Button>
               <Button onClick={cancelEdit} variant="ghost" size="sm">
@@ -181,7 +199,6 @@ export function JobRolesManager() {
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={() => handleUpdate(jobRole._id)} size="sm">
-                    <Save className="w-4 h-4 mr-2" />
                     {t('common.save')}
                   </Button>
                   <Button onClick={cancelEdit} variant="ghost" size="sm">
@@ -200,19 +217,17 @@ export function JobRolesManager() {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => startEdit(jobRole)}
-                    variant="outline"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                   >
-                    <Edit className="w-4 h-4 mr-1" />
-                    {t('common.edit')}
+                    <Edit className="w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => handleDelete(jobRole._id)}
-                    variant="destructive"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                   >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    {t('common.delete')}
+                    <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
                 </div>
               </div>

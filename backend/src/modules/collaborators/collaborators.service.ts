@@ -58,6 +58,8 @@ export class CollaboratorsService {
       .find(filter)
       .populate('tenantId', 'name logo')
       .populate('managerId', 'name email')
+      .populate('jobRoleId', 'name')
+      .populate('departmentId', 'name')
       .exec();
   }
 
@@ -66,6 +68,8 @@ export class CollaboratorsService {
       .findById(id)
       .populate('tenantId', 'name logo defaultLanguage')
       .populate('managerId', 'name email')
+      .populate('jobRoleId', 'name')
+      .populate('departmentId', 'name')
       .exec();
 
     if (!collaborator) {

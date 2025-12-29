@@ -67,6 +67,18 @@ export function Planning() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Import api
+      const { api } = await import('@/lib/api');
+
+      // Save to backend via API
+      await api.patch(`/meetings/journeys/${journeyId}/meetings/${meetingNumber}`, {
+        blockA,
+        blockB,
+        blockC,
+        blockD,
+        status: 'completed', // Mark as completed
+      });
+
       // Update current meeting in store
       setCurrentMeeting({
         ...currentMeeting!,
@@ -76,15 +88,11 @@ export function Planning() {
         blockD,
       });
 
-      // TODO: Save to backend via API
-      // await apiClient.meetings.updateMeeting(journeyId!, Number(meetingNumber), {
-      //   blockA, blockB, blockC, blockD
-      // });
-
       // Navigate back to dashboard
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving planning:', error);
+      alert('Erro ao salvar o planejamento. Por favor, tente novamente.');
     } finally {
       setSaving(false);
     }
@@ -118,7 +126,6 @@ export function Planning() {
               </div>
             </div>
             <Button onClick={handleSave} disabled={saving || !allBlocksComplete}>
-              <Save className="w-4 h-4 mr-2" />
               {saving ? t('common.loading') : t('common.finish')}
             </Button>
           </div>
@@ -169,7 +176,7 @@ export function Planning() {
               >
                 <span className="flex items-center gap-2">
                   {isBlockComplete('blockA') && (
-                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                    <span className="text-base">✅</span>
                   )}
                   Bloco A
                 </span>
@@ -180,7 +187,7 @@ export function Planning() {
               >
                 <span className="flex items-center gap-2">
                   {isBlockComplete('blockB') && (
-                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                    <span className="text-base">✅</span>
                   )}
                   Bloco B
                 </span>
@@ -191,7 +198,7 @@ export function Planning() {
               >
                 <span className="flex items-center gap-2">
                   {isBlockComplete('blockC') && (
-                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                    <span className="text-base">✅</span>
                   )}
                   Bloco C
                 </span>
@@ -202,7 +209,7 @@ export function Planning() {
               >
                 <span className="flex items-center gap-2">
                   {isBlockComplete('blockD') && (
-                    <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                    <span className="text-base">✅</span>
                   )}
                   Bloco D
                 </span>
@@ -221,7 +228,7 @@ export function Planning() {
             <TabsContent value="blockB" className="mt-6">
               <BlockB data={blockB} onChange={setBlockB} />
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" onClick={() => setActiveTab('blockA')}>
+                <Button variant="ghost" onClick={() => setActiveTab('blockA')}>
                   Voltar
                 </Button>
                 <Button onClick={() => { markBlockComplete('blockB'); setActiveTab('blockC'); }}>
@@ -233,7 +240,7 @@ export function Planning() {
             <TabsContent value="blockC" className="mt-6">
               <BlockC data={blockC} onChange={setBlockC} />
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" onClick={() => setActiveTab('blockB')}>
+                <Button variant="ghost" onClick={() => setActiveTab('blockB')}>
                   Voltar
                 </Button>
                 <Button onClick={() => { markBlockComplete('blockC'); setActiveTab('blockD'); }}>
@@ -245,7 +252,7 @@ export function Planning() {
             <TabsContent value="blockD" className="mt-6">
               <BlockD data={blockD} onChange={setBlockD} />
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" onClick={() => setActiveTab('blockC')}>
+                <Button variant="ghost" onClick={() => setActiveTab('blockC')}>
                   Voltar
                 </Button>
                 <Button onClick={() => markBlockComplete('blockD')} variant="success">
@@ -270,7 +277,6 @@ export function Planning() {
                   </p>
                 </div>
                 <Button onClick={handleSave} disabled={saving} size="lg" variant="success">
-                  <Save className="w-4 h-4 mr-2" />
                   {saving ? t('common.loading') : t('common.finish')}
                 </Button>
               </div>

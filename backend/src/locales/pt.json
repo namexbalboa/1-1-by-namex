@@ -73,5 +73,31 @@
         "blocked": "Bloqueado"
       }
     }
+  },
+  "email": {
+    "welcome": {
+      "subject": "Bem-vindo à equipe!",
+      "greeting": "Olá {name},",
+      "intro": "Sua conta foi criada com sucesso. Aqui estão suas credenciais de acesso:",
+      "credentials": {
+        "label": "Credenciais de acesso",
+        "email": "Email",
+        "password": "Senha Temporária",
+        "loginUrl": "URL de Acesso"
+      },
+      "loginButton": "Acessar Plataforma",
+      "instructions": "Por favor, altere sua senha no primeiro acesso.",
+      "security": "Por segurança, não compartilhe estas credenciais.",
+      "footer": "Atenciosamente,<br>Equipe 1:1 Meetings"
+    },
+    "meetingConfirmation": {
+      "subject": "Reunião 1:1 Agendada",
+      "greeting": "Olá",
+      "intro": "Sua reunião 1:1 foi agendada com sucesso.",
+      "dateLabel": "Data",
+      "timeLabel": "Horário",
+      "instructions": "Você receberá um lembrete próximo à data da reunião.",
+      "footer": "Atenciosamente,<br>Equipe 1:1 Meetings"
+    }
   }
 }

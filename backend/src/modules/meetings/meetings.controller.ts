@@ -8,11 +8,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { MeetingsService } from './meetings.service';
 import { CreateJourneyDto } from './dto/create-journey.dto';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
+import { ScheduleMeetingDto } from './dto/schedule-meeting.dto';
 
 @Controller('meetings')
 export class MeetingsController {
@@ -74,5 +76,49 @@ export class MeetingsController {
     @Param('meetingNumber') meetingNumber: string,
   ) {
     return this.meetingsService.deleteMeeting(journeyId, parseInt(meetingNumber));
+  }
+
+  // Schedule meeting endpoint
+  @Post('schedule')
+  @HttpCode(HttpStatus.CREATED)
+  scheduleMeeting(@Body() scheduleMeetingDto: ScheduleMeetingDto) {
+    return this.meetingsService.scheduleMeeting(scheduleMeetingDto);
+  }
+
+  // Get all scheduled meetings for calendar view
+  @Get('scheduled')
+  getAllScheduledMeetings(@Query('tenantId') tenantId: string) {
+    return this.meetingsService.getAllScheduledMeetings(tenantId);
+  }
+
+  // Get upcoming meetings
+  @Get('upcoming')
+  getUpcomingMeetings(
+    @Query('tenantId') tenantId: string,
+    @Query('limit') limit?: string,
+  ) {
+    const limitNum = limit ? parseInt(limit) : 5;
+    return this.meetingsService.getUpcomingMeetings(tenantId, limitNum);
+  }
+
+  // Get dashboard statistics
+  @Get('statistics')
+  getDashboardStatistics(
+    @Query('tenantId') tenantId: string,
+    @Query('collaboratorId') collaboratorId?: string,
+    @Query('isManager') isManager?: string,
+  ) {
+    const isManagerBool = isManager === 'true';
+    return this.meetingsService.getDashboardStatistics(tenantId, collaboratorId, isManagerBool);
+  }
+
+  // Get history data for all collaborators
+  @Get('history')
+  getHistory(
+    @Query('tenantId') tenantId: string,
+    @Query('year') year?: string,
+  ) {
+    const yearNum = year ? parseInt(year) : new Date().getFullYear();
+    return this.meetingsService.getHistory(tenantId, yearNum);
   }
 }

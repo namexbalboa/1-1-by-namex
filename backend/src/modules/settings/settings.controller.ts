@@ -9,12 +9,18 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { CreateJobRoleDto, UpdateJobRoleDto } from './dto/job-role.dto';
 import { CreateDepartmentDto, UpdateDepartmentDto } from './dto/department.dto';
+import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('settings')
+@UseGuards(FirebaseAuthGuard, RolesGuard)
+@Roles('manager')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 

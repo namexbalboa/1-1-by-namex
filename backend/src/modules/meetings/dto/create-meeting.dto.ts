@@ -153,6 +153,10 @@ export class CreateMeetingDto {
   date: Date;
 
   @IsOptional()
+  @IsEnum(['scheduled', 'completed', 'cancelled'])
+  status?: string;
+
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ActionItemDto)

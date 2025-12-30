@@ -7,12 +7,21 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { BlockA } from '@/components/meeting/blocks/BlockA';
 import { BlockB } from '@/components/meeting/blocks/BlockB';
 import { BlockC } from '@/components/meeting/blocks/BlockC';
 import { BlockD } from '@/components/meeting/blocks/BlockD';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/useToast';
 import type { BlockA as BlockAType, BlockB as BlockBType, BlockC as BlockCType, BlockD as BlockDType } from '@/types';
 
 export function Planning() {
@@ -21,6 +30,7 @@ export function Planning() {
   const { journeyId, meetingNumber } = useParams();
   const { collaborator } = useAuth();
   const { currentMeeting, setCurrentMeeting } = useMeetingStore();
+  const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('blockA');
   const [blockA, setBlockA] = useState<Partial<BlockAType>>({
@@ -49,6 +59,7 @@ export function Planning() {
 
   const [saving, setSaving] = useState(false);
   const [completedBlocks, setCompletedBlocks] = useState<Set<string>>(new Set());
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   useEffect(() => {
     // Load existing data if available
@@ -60,42 +71,76 @@ export function Planning() {
     }
   }, [currentMeeting]);
 
-  const markBlockComplete = (block: string) => {
-    setCompletedBlocks(prev => new Set([...prev, block]));
+  const markBlockComplete = async (block: string) => {
+    // If completing Block D, save the meeting data
+    if (block === 'blockD') {
+      setSaving(true);
+      try {
+        // Import api
+        const { api } = await import('@/lib/api');
+
+        const payload = {
+          blockA,
+          blockB,
+          blockC,
+          blockD,
+          status: 'completed', // Mark as completed
+        };
+
+        console.log('Saving meeting with payload:', payload);
+        console.log('URL:', `/meetings/journeys/${journeyId}/meetings/${meetingNumber}`);
+
+        // Save to backend via API
+        const response = await api.patch(`/meetings/journeys/${journeyId}/meetings/${meetingNumber}`, payload);
+        console.log('Save response:', response.data);
+
+        // Update current meeting in store
+        setCurrentMeeting({
+          ...currentMeeting!,
+          blockA,
+          blockB,
+          blockC,
+          blockD,
+        });
+
+        // Mark block as complete
+        setCompletedBlocks(prev => new Set([...prev, block]));
+
+        toast.success('Sucesso', 'Reunião salva com sucesso!');
+
+        // Show completion modal
+        setShowCompletionModal(true);
+      } catch (error) {
+        console.error('Error saving planning:', error);
+        toast.error('Erro', 'Erro ao salvar o planejamento. Por favor, tente novamente.');
+      } finally {
+        setSaving(false);
+      }
+    } else {
+      // For other blocks, just mark as complete
+      setCompletedBlocks(prev => {
+        const newSet = new Set([...prev, block]);
+
+        // Show success toast
+        const blockNames: Record<string, string> = {
+          blockA: 'Bloco A - Excelência Operacional',
+          blockB: 'Bloco B - Alinhamento Estratégico',
+          blockC: 'Bloco C - Dinâmica Humana',
+        };
+
+        toast.success('Bloco Completo!', `${blockNames[block]} foi marcado como concluído`);
+
+        // Scroll to bottom smoothly
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+        return newSet;
+      });
+    }
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      // Import api
-      const { api } = await import('@/lib/api');
-
-      // Save to backend via API
-      await api.patch(`/meetings/journeys/${journeyId}/meetings/${meetingNumber}`, {
-        blockA,
-        blockB,
-        blockC,
-        blockD,
-        status: 'completed', // Mark as completed
-      });
-
-      // Update current meeting in store
-      setCurrentMeeting({
-        ...currentMeeting!,
-        blockA,
-        blockB,
-        blockC,
-        blockD,
-      });
-
-      // Navigate back to dashboard
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Error saving planning:', error);
-      alert('Erro ao salvar o planejamento. Por favor, tente novamente.');
-    } finally {
-      setSaving(false);
-    }
+  const handleFinish = () => {
+    // Navigate to meetings page
+    navigate('/meetings');
   };
 
   const handleBack = () => {
@@ -125,9 +170,6 @@ export function Planning() {
                 </p>
               </div>
             </div>
-            <Button onClick={handleSave} disabled={saving || !allBlocksComplete}>
-              {saving ? t('common.loading') : t('common.finish')}
-            </Button>
           </div>
         </div>
       </div>
@@ -255,35 +297,112 @@ export function Planning() {
                 <Button variant="ghost" onClick={() => setActiveTab('blockC')}>
                   Voltar
                 </Button>
-                <Button onClick={() => markBlockComplete('blockD')} variant="success">
-                  <Check className="w-4 h-4 mr-2" />
-                  Marcar como Completo
-                </Button>
+                {isBlockComplete('blockD') ? (
+                  <div className="flex items-center gap-2 text-success animate-in fade-in zoom-in duration-500">
+                    <Check className="w-6 h-6" strokeWidth={3} />
+                    <span className="font-semibold">Bloco Concluído!</span>
+                  </div>
+                ) : (
+                  <Button onClick={() => markBlockComplete('blockD')} className="bg-green-600 hover:bg-green-700 text-white">
+                    <Check className="w-4 h-4 mr-2" />
+                    Marcar como Completo
+                  </Button>
+                )}
               </div>
             </TabsContent>
           </Tabs>
-
-          {/* Final Save Button */}
-          {allBlocksComplete && (
-            <Card className="p-6 bg-success/10 border-success/30">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <Check className="w-6 h-6 text-success" strokeWidth={3} />
-                    Todos os blocos completos!
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Você pode finalizar a reunião agora.
-                  </p>
-                </div>
-                <Button onClick={handleSave} disabled={saving} size="lg" variant="success">
-                  {saving ? t('common.loading') : t('common.finish')}
-                </Button>
-              </div>
-            </Card>
-          )}
         </div>
       </div>
+
+      {/* Completion Modal */}
+      <Dialog open={showCompletionModal} onOpenChange={() => {}}>
+        <DialogContent
+          className="sm:max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-700 text-xl">
+              <Check className="w-8 h-8 text-green-600" strokeWidth={3} />
+              Reunião Concluída com Sucesso!
+            </DialogTitle>
+            <DialogDescription>
+              Parabéns! Todos os blocos foram preenchidos e a reunião foi salva.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Summary Cards */}
+          <div className="space-y-4 py-4">
+            {/* Block A Summary */}
+            <Card className="p-4 bg-blue-50 border-blue-200">
+              <h3 className="font-semibold text-sm flex items-center gap-2 mb-2">
+                <Check className="w-4 h-4 text-green-600" />
+                Bloco A - Excelência Operacional
+              </h3>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>• Distribuição de tempo: {blockA.timeDistribution?.execution}% execução, {blockA.timeDistribution?.meetings}% reuniões, {blockA.timeDistribution?.resolution}% resolução</p>
+                <p>• Bloqueadores: <span className={`font-medium ${
+                  blockA.blockers?.level === 'green' ? 'text-green-600' :
+                  blockA.blockers?.level === 'yellow' ? 'text-yellow-600' : 'text-red-600'
+                }`}>{blockA.blockers?.level === 'green' ? 'Verde' : blockA.blockers?.level === 'yellow' ? 'Amarelo' : 'Vermelho'}</span></p>
+                <p>• Adequação de ferramentas: {blockA.toolAdequacy}/5</p>
+                <p>• Clareza de prioridades: {blockA.priorityClarity}/10</p>
+              </div>
+            </Card>
+
+            {/* Block B Summary */}
+            <Card className="p-4 bg-purple-50 border-purple-200">
+              <h3 className="font-semibold text-sm flex items-center gap-2 mb-2">
+                <Check className="w-4 h-4 text-green-600" />
+                Bloco B - Alinhamento Estratégico
+              </h3>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>• Conexão com objetivos: {blockB.goalConnection}/5</p>
+                <p>• Autonomia: {blockB.autonomy}%</p>
+                <p>• Inovação: {blockB.innovation ? 'Sim' : 'Não'}</p>
+              </div>
+            </Card>
+
+            {/* Block C Summary */}
+            <Card className="p-4 bg-orange-50 border-orange-200">
+              <h3 className="font-semibold text-sm flex items-center gap-2 mb-2">
+                <Check className="w-4 h-4 text-green-600" />
+                Bloco C - Dinâmica Humana
+              </h3>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>• Segurança psicológica: {blockC.psychologicalSafety}/5</p>
+                <p>• Fricção na colaboração: {blockC.collaborationFriction}/10</p>
+                <p>• Reconhecimento: {blockC.recognition === 'low' ? 'Baixo' : blockC.recognition === 'medium' ? 'Médio' : 'Alto'}</p>
+              </div>
+            </Card>
+
+            {/* Block D Summary */}
+            <Card className="p-4 bg-green-50 border-green-200">
+              <h3 className="font-semibold text-sm flex items-center gap-2 mb-2">
+                <Check className="w-4 h-4 text-green-600" />
+                Bloco D - Desenvolvimento e Bem-estar
+              </h3>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>• Desafio intelectual: Habilidade {blockD.intellectualChallenge?.skill}/10, Desafio {blockD.intellectualChallenge?.challenge}/10</p>
+                <p>• Utilização de forças: {blockD.strengthsUtilization}%</p>
+                <p>• Saúde mental: {blockD.mentalHealth}/5</p>
+                {blockD.biweeklyFocus && <p>• Foco quinzenal: {blockD.biweeklyFocus}</p>}
+              </div>
+            </Card>
+          </div>
+
+          <DialogFooter className="sm:justify-center">
+            <Button
+              onClick={handleFinish}
+              size="lg"
+              className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"
+            >
+              <Check className="w-5 h-5 mr-2" />
+              Ir para o Calendário
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }

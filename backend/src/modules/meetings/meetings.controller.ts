@@ -121,4 +121,15 @@ export class MeetingsController {
     const yearNum = year ? parseInt(year) : new Date().getFullYear();
     return this.meetingsService.getHistory(tenantId, yearNum);
   }
+
+  // Get detailed history for a specific collaborator
+  @Get('history/:collaboratorId')
+  getCollaboratorHistory(
+    @Param('collaboratorId') collaboratorId: string,
+    @Query('tenantId') tenantId: string,
+    @Query('year') year?: string,
+  ) {
+    const yearNum = year ? parseInt(year) : new Date().getFullYear();
+    return this.meetingsService.getCollaboratorHistory(tenantId, collaboratorId, yearNum);
+  }
 }

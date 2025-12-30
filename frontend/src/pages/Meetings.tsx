@@ -65,6 +65,7 @@ export function Meetings() {
         date: new Date(m.date),
       }));
 
+      console.log('Loaded meetings:', meetingsData);
       setMeetings(meetingsData);
     } catch (error) {
       console.error('Error loading meetings:', error);

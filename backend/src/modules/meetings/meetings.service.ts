@@ -116,6 +116,9 @@ export class MeetingsService {
     }
 
     // Update the meeting
+    console.log('Updating meeting with data:', updateMeetingDto);
+    console.log('Meeting before update:', journey.meetings[meetingIndex]);
+
     Object.assign(journey.meetings[meetingIndex], updateMeetingDto);
 
     // If marking as completed, set completedAt timestamp
@@ -123,7 +126,15 @@ export class MeetingsService {
       (journey.meetings[meetingIndex] as any).completedAt = new Date();
     }
 
-    return journey.save();
+    console.log('Meeting after update:', journey.meetings[meetingIndex]);
+
+    // Mark the meetings array as modified so Mongoose detects the change
+    journey.markModified('meetings');
+
+    const savedJourney = await journey.save();
+    console.log('Saved meeting:', savedJourney.meetings[meetingIndex]);
+
+    return savedJourney;
   }
 
   async getMeeting(journeyId: string, meetingNumber: number): Promise<any> {
@@ -212,6 +223,7 @@ export class MeetingsService {
     journey.meetings.push({
       meetingNumber,
       date: meetingDateTime,
+      status: 'scheduled',
       actionItems: [],
       pulseHistory: [],
     } as any);
@@ -271,24 +283,22 @@ export class MeetingsService {
 
     for (const journey of journeys) {
       for (const meeting of journey.meetings) {
-        // Only include scheduled meetings (not completed or cancelled)
-        if ((meeting as any).status !== 'completed' && (meeting as any).status !== 'cancelled') {
-          const collaborator = journey.collaboratorId as any;
-          scheduledMeetings.push({
-            id: `${journey._id}-${meeting.meetingNumber}`,
-            collaboratorName: collaborator.name,
-            collaboratorId: collaborator._id,
-            department: collaborator.departmentId?.name || 'N/A',
-            date: meeting.date,
-            time: new Date(meeting.date).toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-            meetingNumber: meeting.meetingNumber,
-            journeyId: journey._id,
-            status: (meeting as any).status || 'scheduled',
-          });
-        }
+        // Include all meetings (scheduled, completed, cancelled) so frontend can display them appropriately
+        const collaborator = journey.collaboratorId as any;
+        scheduledMeetings.push({
+          id: `${journey._id}-${meeting.meetingNumber}`,
+          collaboratorName: collaborator.name,
+          collaboratorId: collaborator._id,
+          department: collaborator.departmentId?.name || 'N/A',
+          date: meeting.date,
+          time: new Date(meeting.date).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          meetingNumber: meeting.meetingNumber,
+          journeyId: journey._id,
+          status: (meeting as any).status || 'scheduled',
+        });
       }
     }
 
@@ -576,5 +586,65 @@ export class MeetingsService {
     historyData.sort((a, b) => a.collaboratorName.localeCompare(b.collaboratorName));
 
     return historyData;
+  }
+
+  async getCollaboratorHistory(
+    tenantId: string,
+    collaboratorId: string,
+    year: number,
+  ): Promise<any> {
+    // Get journey for the specified collaborator and year
+    const journey = await this.meetingJourneyModel
+      .findOne({ tenantId, collaboratorId, year })
+      .populate('collaboratorId', 'name email')
+      .populate('managerId', 'name')
+      .populate({
+        path: 'collaboratorId',
+        populate: {
+          path: 'departmentId',
+          select: 'name',
+        },
+      })
+      .exec();
+
+    if (!journey) {
+      return {
+        collaborator: null,
+        meetings: [],
+      };
+    }
+
+    const collaborator = journey.collaboratorId as any;
+    const manager = journey.managerId as any;
+
+    // Filter only completed meetings and map to response format
+    const completedMeetings = journey.meetings
+      .filter((meeting: any) => meeting.status === 'completed')
+      .map((meeting: any) => ({
+        meetingNumber: meeting.meetingNumber,
+        date: meeting.date,
+        completedAt: meeting.completedAt,
+        blockA: meeting.blockA,
+        blockB: meeting.blockB,
+        blockC: meeting.blockC,
+        blockD: meeting.blockD,
+        actionItems: meeting.actionItems,
+        pulseHistory: meeting.pulseHistory,
+      }))
+      .sort((a: any, b: any) => a.meetingNumber - b.meetingNumber);
+
+    return {
+      collaborator: {
+        id: collaborator._id,
+        name: collaborator.name,
+        email: collaborator.email,
+        department: collaborator.departmentId?.name || 'N/A',
+      },
+      manager: {
+        name: manager?.name || 'N/A',
+      },
+      year,
+      meetings: completedMeetings,
+    };
   }
 }

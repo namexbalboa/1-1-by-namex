@@ -9,6 +9,7 @@ import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
 import { ScheduleMeetingDto } from './dto/schedule-meeting.dto';
 import { EmailService } from '../email/email.service';
+import { AiService } from './ai.service';
 
 @Injectable()
 export class MeetingsService {
@@ -20,6 +21,7 @@ export class MeetingsService {
     @InjectModel(Department.name)
     private departmentModel: Model<DepartmentDocument>,
     private readonly emailService: EmailService,
+    private readonly aiService: AiService,
   ) {}
 
   async createJourney(createJourneyDto: CreateJourneyDto): Promise<MeetingJourney> {
@@ -101,7 +103,10 @@ export class MeetingsService {
     meetingNumber: number,
     updateMeetingDto: UpdateMeetingDto,
   ): Promise<MeetingJourney> {
-    const journey = await this.meetingJourneyModel.findById(journeyId);
+    const journey = await this.meetingJourneyModel
+      .findById(journeyId)
+      .populate('collaboratorId', 'name')
+      .exec();
 
     if (!journey) {
       throw new NotFoundException('Journey not found');
@@ -121,9 +126,32 @@ export class MeetingsService {
 
     Object.assign(journey.meetings[meetingIndex], updateMeetingDto);
 
-    // If marking as completed, set completedAt timestamp
+    // If marking as completed, generate AI analysis
     if (updateMeetingDto.status === 'completed') {
       (journey.meetings[meetingIndex] as any).completedAt = new Date();
+
+      try {
+        // Get previous completed meetings
+        const previousMeetings = journey.meetings
+          .filter((m: any, index: number) =>
+            index < meetingIndex && m.status === 'completed'
+          );
+
+        // Generate AI analysis
+        const collaboratorName = (journey.collaboratorId as any)?.name || 'Colaborador';
+        const aiAnalysis = await this.aiService.analyzeMeeting(
+          journey.meetings[meetingIndex],
+          previousMeetings,
+          collaboratorName,
+        );
+
+        // Save AI analysis
+        (journey.meetings[meetingIndex] as any).aiAnalysis = aiAnalysis;
+        console.log('AI Analysis generated successfully');
+      } catch (error) {
+        console.error('Error generating AI analysis:', error);
+        // Continue without AI analysis if it fails
+      }
     }
 
     console.log('Meeting after update:', journey.meetings[meetingIndex]);
@@ -630,6 +658,7 @@ export class MeetingsService {
         blockD: meeting.blockD,
         actionItems: meeting.actionItems,
         pulseHistory: meeting.pulseHistory,
+        aiAnalysis: meeting.aiAnalysis,
       }))
       .sort((a: any, b: any) => a.meetingNumber - b.meetingNumber);
 
@@ -646,5 +675,73 @@ export class MeetingsService {
       year,
       meetings: completedMeetings,
     };
+  }
+
+  async regenerateAiAnalysis(
+    collaboratorId: string,
+    meetingNumber: number,
+    tenantId: string,
+  ): Promise<{ message: string; aiAnalysis: string }> {
+    // Find the journey that contains this meeting (search across all years)
+    const journey = await this.meetingJourneyModel
+      .findOne({
+        collaboratorId,
+        tenantId,
+        'meetings.meetingNumber': meetingNumber,
+      })
+      .populate('collaboratorId', 'name')
+      .exec();
+
+    if (!journey) {
+      throw new NotFoundException('Journey or meeting not found');
+    }
+
+    const meetingIndex = journey.meetings.findIndex(
+      (m: any) => m.meetingNumber === meetingNumber,
+    );
+
+    if (meetingIndex === -1) {
+      throw new NotFoundException('Meeting not found');
+    }
+
+    const meeting = journey.meetings[meetingIndex];
+
+    if ((meeting as any).status !== 'completed') {
+      throw new ConflictException('Can only regenerate analysis for completed meetings');
+    }
+
+    try {
+      // Get previous completed meetings
+      const previousMeetings = journey.meetings
+        .filter((m: any, index: number) =>
+          index < meetingIndex && m.status === 'completed'
+        );
+
+      // Generate AI analysis
+      const collaboratorName = (journey.collaboratorId as any)?.name || 'Colaborador';
+      const aiAnalysis = await this.aiService.analyzeMeeting(
+        journey.meetings[meetingIndex],
+        previousMeetings,
+        collaboratorName,
+      );
+
+      // Update AI analysis
+      (journey.meetings[meetingIndex] as any).aiAnalysis = aiAnalysis;
+
+      // Mark the meetings array as modified so Mongoose detects the change
+      journey.markModified('meetings');
+
+      await journey.save();
+
+      console.log('AI Analysis regenerated successfully');
+
+      return {
+        message: 'AI analysis regenerated successfully',
+        aiAnalysis,
+      };
+    } catch (error) {
+      console.error('Error regenerating AI analysis:', error);
+      throw error;
+    }
   }
 }

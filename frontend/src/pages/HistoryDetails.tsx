@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, Building2 } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Building2, Sparkles, RefreshCw } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { api } from '@/lib/api';
 
@@ -18,6 +25,7 @@ interface Meeting {
   blockD?: any;
   actionItems?: any[];
   pulseHistory?: any[];
+  aiAnalysis?: string;
 }
 
 interface HistoryData {
@@ -40,6 +48,10 @@ export function HistoryDetails() {
   const { collaborator } = useAuth();
   const [historyData, setHistoryData] = useState<HistoryData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAiAnalysisModal, setShowAiAnalysisModal] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<string | null>(null);
+  const [selectedMeetingNumber, setSelectedMeetingNumber] = useState<number | null>(null);
+  const [regeneratingAnalysis, setRegeneratingAnalysis] = useState<number | null>(null);
 
   useEffect(() => {
     loadHistoryData();
@@ -76,6 +88,48 @@ export function HistoryDetails() {
       month: '2-digit',
       year: 'numeric',
     });
+  };
+
+  const handleOpenAiAnalysis = (analysis: string, meetingNumber: number) => {
+    setSelectedAnalysis(analysis);
+    setSelectedMeetingNumber(meetingNumber);
+    setShowAiAnalysisModal(true);
+  };
+
+  const handleRegenerateAnalysis = async (meetingNumber: number) => {
+    if (!confirm('Deseja regenerar a análise de IA para esta reunião?')) {
+      return;
+    }
+
+    setRegeneratingAnalysis(meetingNumber);
+    try {
+      const tenantId = typeof collaborator?.tenantId === 'object'
+        ? collaborator?.tenantId?._id
+        : collaborator?.tenantId;
+
+      if (!tenantId || !collaboratorId) {
+        alert('Erro: Parâmetros inválidos');
+        return;
+      }
+
+      // Call API to regenerate AI analysis
+      const response = await api.post(`/meetings/regenerate-analysis/${collaboratorId}/${meetingNumber}`, {
+        tenantId,
+      });
+
+      alert('Análise de IA regenerada com sucesso!');
+
+      // Wait a moment to ensure DB has saved
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Reload data
+      await loadHistoryData();
+    } catch (error: any) {
+      console.error('Error regenerating AI analysis:', error);
+      alert(error.response?.data?.message || 'Falha ao regenerar análise de IA');
+    } finally {
+      setRegeneratingAnalysis(null);
+    }
   };
 
   if (isLoading) {
@@ -184,6 +238,7 @@ export function HistoryDetails() {
                             <th className="text-left py-2 px-3 font-semibold bg-purple-50">Bloco B - Estratégico</th>
                             <th className="text-left py-2 px-3 font-semibold bg-orange-50">Bloco C - Clima</th>
                             <th className="text-left py-2 px-3 font-semibold bg-green-50">Bloco D - Desenvolvimento</th>
+                            <th className="text-left py-2 px-3 font-semibold bg-yellow-50">Análise de IA</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -273,6 +328,35 @@ export function HistoryDetails() {
                                 )}
                               </div>
                             </td>
+                            <td className="py-3 px-3 align-top bg-yellow-50/30">
+                              <div className="flex flex-col items-center justify-center gap-2 h-full">
+                                {meeting.aiAnalysis ? (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleOpenAiAnalysis(meeting.aiAnalysis!, meeting.meetingNumber)}
+                                    className="gap-2 text-xs w-full"
+                                  >
+                                    <Sparkles className="w-3.5 h-3.5" />
+                                    Ver Análise
+                                  </Button>
+                                ) : (
+                                  <span className="text-xs text-muted-foreground italic">
+                                    Não disponível
+                                  </span>
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRegenerateAnalysis(meeting.meetingNumber)}
+                                  disabled={regeneratingAnalysis === meeting.meetingNumber}
+                                  className="gap-2 text-xs w-full"
+                                >
+                                  <RefreshCw className={`w-3.5 h-3.5 ${regeneratingAnalysis === meeting.meetingNumber ? 'animate-spin' : ''}`} />
+                                  {regeneratingAnalysis === meeting.meetingNumber ? 'Gerando...' : 'Regenerar'}
+                                </Button>
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -284,6 +368,30 @@ export function HistoryDetails() {
           )}
         </div>
       </div>
+
+      {/* AI Analysis Modal */}
+      <Dialog open={showAiAnalysisModal} onOpenChange={setShowAiAnalysisModal}>
+        <DialogContent className="sm:max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-primary" />
+              Análise de IA - Reunião #{selectedMeetingNumber}
+            </DialogTitle>
+            <DialogDescription>
+              Insights gerados por inteligência artificial baseados no histórico do colaborador
+            </DialogDescription>
+          </DialogHeader>
+          <div className="prose prose-sm max-w-none">
+            {selectedAnalysis ? (
+              <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                {selectedAnalysis}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">Análise não disponível.</p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }

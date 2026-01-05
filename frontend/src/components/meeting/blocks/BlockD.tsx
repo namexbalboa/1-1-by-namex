@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { BlockD as BlockDType } from '@/types';
 
 interface BlockDProps {
@@ -67,24 +74,32 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
   const flowState = getFlowState();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-primary mb-2">
-          {t('meeting.blocks.d.title')}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Como está seu desenvolvimento profissional e bem-estar?
-        </p>
-      </div>
+    <TooltipProvider>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-primary mb-2">
+            {t('meeting.blocks.d.title')}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Como está seu desenvolvimento profissional e bem-estar?
+          </p>
+        </div>
 
       {/* Intellectual Challenge (Flow State) */}
       <Card className="p-6">
         <div className="space-y-6">
-          <div>
-            <Label className="text-base">{t('meeting.blocks.d.intellectualChallenge')}</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Avalie seu nível de habilidade atual vs. o desafio das tarefas
-            </p>
+          <div className="flex items-center gap-2">
+            <Label className="text-lg font-semibold">
+              Seu trabalho oferece desafios adequados?
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Avalie a relação entre seu nível de habilidade e o desafio das tarefas. O estado ideal (Flow) ocorre quando há equilíbrio entre alta habilidade e alto desafio, promovendo engajamento e produtividade.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           {/* Skill Level */}
@@ -157,13 +172,18 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       <Card className="p-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <Label className="text-base">
-                {t('meeting.blocks.d.strengthsUtilization')}
+            <div className="flex items-center gap-2 flex-1">
+              <Label className="text-lg font-semibold">
+                Você consegue usar seus pontos fortes?
               </Label>
-              <p className="text-sm text-muted-foreground mt-1">
-                Quanto você está usando seus pontos fortes no trabalho?
-              </p>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>Indique o quanto você consegue aplicar seus talentos naturais, habilidades e pontos fortes no dia a dia de trabalho. Usar pontos fortes está associado a maior satisfação e desempenho.</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <Badge variant="outline" className="text-lg">
               {data.strengthsUtilization || 50}%
@@ -192,11 +212,18 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Active Learning */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div>
-            <Label className="text-base">{t('meeting.blocks.d.activeLearning')}</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Quais áreas você está estudando/desenvolvendo atualmente?
-            </p>
+          <div className="flex items-center gap-2">
+            <Label className="text-lg font-semibold">
+              O que você está aprendendo ativamente?
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Liste as áreas de conhecimento, habilidades técnicas ou comportamentais que você está estudando ou desenvolvendo no momento. Isso ajuda a mapear seu desenvolvimento contínuo.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           {!readonly && (
@@ -240,11 +267,18 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       <Card className="p-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <Label className="text-base">{t('meeting.blocks.d.mentalHealth')}</Label>
-              <p className="text-sm text-muted-foreground mt-1">
-                Como você avalia sua saúde mental e bem-estar?
-              </p>
+            <div className="flex items-center gap-2 flex-1">
+              <Label className="text-lg font-semibold">
+                Como está sua saúde mental?
+              </Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>Avalie seu bem-estar mental considerando aspectos como nível de estresse, qualidade do sono, equilíbrio vida-trabalho e estado emocional geral. Esta é uma métrica importante para a sustentabilidade da sua performance.</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <Badge
               variant={(data.mentalHealth || 3) >= 4 ? 'default' : 'destructive'}
@@ -280,11 +314,18 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Biweekly Focus */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div>
-            <Label className="text-base">{t('meeting.blocks.d.biweeklyFocus')}</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Qual será seu foco principal de desenvolvimento para as próximas 2 semanas?
-            </p>
+          <div className="flex items-center gap-2">
+            <Label className="text-lg font-semibold">
+              Qual será seu foco principal nas próximas duas semanas?
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Defina um objetivo ou área prioritária de desenvolvimento para o próximo período. Isso ajuda a manter o foco e permite acompanhar o progresso na próxima reunião.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <Textarea
@@ -332,6 +373,7 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
           </div>
         </div>
       </Card>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }

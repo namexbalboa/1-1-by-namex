@@ -16,7 +16,11 @@
       "Bash(fi)",
       "Bash(find:*)",
       "Bash(timeout 10 npm run build:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npm run start:dev:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)"
     ]
   }
 }

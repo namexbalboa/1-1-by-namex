@@ -132,4 +132,15 @@ export class MeetingsController {
     const yearNum = year ? parseInt(year) : new Date().getFullYear();
     return this.meetingsService.getCollaboratorHistory(tenantId, collaboratorId, yearNum);
   }
+
+  // Regenerate AI analysis for a specific meeting
+  @Post('regenerate-analysis/:collaboratorId/:meetingNumber')
+  @HttpCode(HttpStatus.OK)
+  regenerateAiAnalysis(
+    @Param('collaboratorId') collaboratorId: string,
+    @Param('meetingNumber') meetingNumber: string,
+    @Body('tenantId') tenantId: string,
+  ) {
+    return this.meetingsService.regenerateAiAnalysis(collaboratorId, parseInt(meetingNumber), tenantId);
+  }
 }

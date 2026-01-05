@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MeetingsController } from './meetings.controller';
 import { MeetingsService } from './meetings.service';
+import { AiService } from './ai.service';
 import { MeetingJourney, MeetingJourneySchema } from '../../schemas/meeting.schema';
 import { Collaborator, CollaboratorSchema } from '../../schemas/collaborator.schema';
 import { Department, DepartmentSchema } from '../../schemas/department.schema';
@@ -17,7 +18,7 @@ import { EmailModule } from '../email/email.module';
     EmailModule,
   ],
   controllers: [MeetingsController],
-  providers: [MeetingsService],
+  providers: [MeetingsService, AiService],
   exports: [MeetingsService],
 })
 export class MeetingsModule {}

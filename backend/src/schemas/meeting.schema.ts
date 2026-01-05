@@ -131,6 +131,9 @@ class Meeting {
 
   @Prop({ type: BlockD })
   blockD: BlockD;
+
+  @Prop({ type: String })
+  aiAnalysis: string;
 }
 
 export type MeetingJourneyDocument = MeetingJourney & Document;

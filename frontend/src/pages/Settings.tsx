@@ -17,22 +17,22 @@ export function Settings() {
     {
       id: 'departments',
       label: t('settings.departments.title'),
-      content: <DepartmentsManager />,
+      content: <DepartmentsManager key={`departments-${activeTab === 'departments' ? Date.now() : 'inactive'}`} />,
     },
     {
       id: 'job-roles',
       label: t('settings.jobRoles.title'),
-      content: <JobRolesManager />,
+      content: <JobRolesManager key={`job-roles-${activeTab === 'job-roles' ? Date.now() : 'inactive'}`} />,
     },
     {
       id: 'managers',
       label: t('settings.managers.title'),
-      content: <ManagersManager />,
+      content: <ManagersManager key={`managers-${activeTab === 'managers' ? Date.now() : 'inactive'}`} />,
     },
     {
       id: 'collaborators',
       label: 'Colaboradores',
-      content: <CollaboratorsManager />,
+      content: <CollaboratorsManager key={`collaborators-${activeTab === 'collaborators' ? Date.now() : 'inactive'}`} isActive={activeTab === 'collaborators'} />,
     },
   ];
 

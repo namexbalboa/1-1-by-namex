@@ -734,6 +734,11 @@ export class MeetingsService {
       await journey.save();
 
       console.log('AI Analysis regenerated successfully');
+      console.log('Updated meeting:', JSON.stringify({
+        meetingNumber: journey.meetings[meetingIndex].meetingNumber,
+        hasAiAnalysis: !!(journey.meetings[meetingIndex] as any).aiAnalysis,
+        aiAnalysisLength: ((journey.meetings[meetingIndex] as any).aiAnalysis || '').length,
+      }));
 
       return {
         message: 'AI analysis regenerated successfully',

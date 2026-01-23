@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import type { BlockD as BlockDType } from '@/types';
 
 interface BlockDProps {
@@ -74,7 +67,6 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
   const flowState = getFlowState();
 
   return (
-    <TooltipProvider>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold text-primary mb-2">
@@ -88,18 +80,13 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Intellectual Challenge (Flow State) */}
       <Card className="p-6">
         <div className="space-y-6">
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <Label className="text-lg font-semibold">
               Seu trabalho oferece desafios adequados?
             </Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Avalie a relação entre seu nível de habilidade e o desafio das tarefas. O estado ideal (Flow) ocorre quando há equilíbrio entre alta habilidade e alto desafio, promovendo engajamento e produtividade.</p>
-              </TooltipContent>
-            </Tooltip>
+            <p className="text-sm text-muted-foreground">
+              Considerando a relação entre seu nível de habilidade e o desafio das tarefas, como você avaliaria cada um destes aspectos? (O estado ideal - Flow - ocorre quando há equilíbrio entre alta habilidade e alto desafio, promovendo engajamento e produtividade)
+            </p>
           </div>
 
           {/* Skill Level */}
@@ -171,23 +158,18 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Strengths Utilization */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-1">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">
                 Você consegue usar seus pontos fortes?
               </Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Indique o quanto você consegue aplicar seus talentos naturais, habilidades e pontos fortes no dia a dia de trabalho. Usar pontos fortes está associado a maior satisfação e desempenho.</p>
-                </TooltipContent>
-              </Tooltip>
+              <Badge variant="outline" className="text-lg">
+                {data.strengthsUtilization || 50}%
+              </Badge>
             </div>
-            <Badge variant="outline" className="text-lg">
-              {data.strengthsUtilization || 50}%
-            </Badge>
+            <p className="text-sm text-muted-foreground">
+              Em uma escala de 0% a 100%, o quanto você consegue aplicar seus talentos naturais, habilidades e pontos fortes no dia a dia de trabalho?
+            </p>
           </div>
 
           <Slider
@@ -212,18 +194,13 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Active Learning */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <Label className="text-lg font-semibold">
               O que você está aprendendo ativamente?
             </Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Liste as áreas de conhecimento, habilidades técnicas ou comportamentais que você está estudando ou desenvolvendo no momento. Isso ajuda a mapear seu desenvolvimento contínuo.</p>
-              </TooltipContent>
-            </Tooltip>
+            <p className="text-sm text-muted-foreground">
+              Quais são as áreas de conhecimento, habilidades técnicas ou comportamentais que você está estudando ou desenvolvendo no momento?
+            </p>
           </div>
 
           {!readonly && (
@@ -266,26 +243,21 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Mental Health */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-1">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">
                 Como está sua saúde mental?
               </Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Avalie seu bem-estar mental considerando aspectos como nível de estresse, qualidade do sono, equilíbrio vida-trabalho e estado emocional geral. Esta é uma métrica importante para a sustentabilidade da sua performance.</p>
-                </TooltipContent>
-              </Tooltip>
+              <Badge
+                variant={(data.mentalHealth || 3) >= 4 ? 'default' : 'destructive'}
+                className="text-lg"
+              >
+                {data.mentalHealth || 3}/5
+              </Badge>
             </div>
-            <Badge
-              variant={(data.mentalHealth || 3) >= 4 ? 'default' : 'destructive'}
-              className="text-lg"
-            >
-              {data.mentalHealth || 3}/5
-            </Badge>
+            <p className="text-sm text-muted-foreground">
+              Em uma escala de 1 a 5, como você avalia seu bem-estar mental considerando aspectos como nível de estresse, qualidade do sono, equilíbrio vida-trabalho e estado emocional geral?
+            </p>
           </div>
 
           <Slider
@@ -314,18 +286,13 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
       {/* Biweekly Focus */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <Label className="text-lg font-semibold">
               Qual será seu foco principal nas próximas duas semanas?
             </Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Defina um objetivo ou área prioritária de desenvolvimento para o próximo período. Isso ajuda a manter o foco e permite acompanhar o progresso na próxima reunião.</p>
-              </TooltipContent>
-            </Tooltip>
+            <p className="text-sm text-muted-foreground">
+              Qual será seu objetivo ou área prioritária de desenvolvimento para as próximas duas semanas?
+            </p>
           </div>
 
           <Textarea
@@ -374,6 +341,5 @@ export function BlockD({ data, onChange, readonly = false }: BlockDProps) {
         </div>
       </Card>
       </div>
-    </TooltipProvider>
   );
 }

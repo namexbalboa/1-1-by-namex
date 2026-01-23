@@ -1,17 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import type { BlockA as BlockAType } from '@/types';
 
 interface BlockAProps {
@@ -108,7 +101,6 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
   const isTimeValid = totalTime === 100;
 
   return (
-    <TooltipProvider>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold text-primary mb-2">
@@ -123,19 +115,12 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
         <Card className="p-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold">
-                  Como você tem distribuído seu tempo?
-                </h3>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Analise como você está distribuindo seu tempo entre execução de tarefas, participação em reuniões e resolução de imprevistos. A soma deve totalizar 100%.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              <h3 className="text-lg font-semibold">
+                Como você tem distribuído seu tempo?
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Sob sua análise, se dividirmos um percentual de 100% entre 3 tópicos "execução de tarefas", "participação em reuniões" e "resolução de imprevistos", como ficaria esta divisão?
+              </p>
               <Badge variant={isTimeValid ? 'default' : 'destructive'}>
                 Total: {totalTime}%
               </Badge>
@@ -191,19 +176,14 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-primary to-primary/80 flex-shrink-0"></div>
                   <Label className="text-base font-medium">{t('meeting.blocks.a.execution')}</Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Tempo dedicado à execução de tarefas planejadas, desenvolvimento de projetos e atividades previstas no seu escopo de trabalho.</p>
-                    </TooltipContent>
-                  </Tooltip>
                 </div>
                 <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
                   {data.timeDistribution?.execution || 33}%
                 </Badge>
               </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                Tempo dedicado à execução de tarefas planejadas, desenvolvimento de projetos e atividades previstas no seu escopo de trabalho.
+              </p>
               <Slider
                 value={[data.timeDistribution?.execution || 33]}
                 onValueChange={([value]) => updateTimeDistribution('execution', value)}
@@ -213,9 +193,6 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 disabled={readonly}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground">
-                Tempo executando tarefas planejadas e desenvolvimento
-              </p>
             </div>
 
             {/* Meetings */}
@@ -224,19 +201,14 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-accent to-accent/80 flex-shrink-0"></div>
                   <Label className="text-base font-medium">{t('meeting.blocks.a.meetings')}</Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Tempo gasto em reuniões, alinhamentos com o time, cerimônias ágeis e outras interações colaborativas planejadas.</p>
-                    </TooltipContent>
-                  </Tooltip>
                 </div>
                 <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
                   {data.timeDistribution?.meetings || 33}%
                 </Badge>
               </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                Tempo gasto em reuniões, alinhamentos com o time, cerimônias ágeis e outras interações colaborativas planejadas.
+              </p>
               <Slider
                 value={[data.timeDistribution?.meetings || 33]}
                 onValueChange={([value]) => updateTimeDistribution('meetings', value)}
@@ -246,9 +218,6 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 disabled={readonly}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground">
-                Tempo em reuniões, alinhamentos e cerimônias
-              </p>
             </div>
 
             {/* Resolution */}
@@ -257,19 +226,14 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-warning to-warning/80 flex-shrink-0"></div>
                   <Label className="text-base font-medium">{t('meeting.blocks.a.resolution')}</Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Tempo dedicado a resolver imprevistos, apagar incêndios, lidar com urgências não planejadas e corrigir problemas inesperados.</p>
-                    </TooltipContent>
-                  </Tooltip>
                 </div>
                 <Badge variant="outline" className="text-base font-semibold min-w-[60px] justify-center">
                   {data.timeDistribution?.resolution || 34}%
                 </Badge>
               </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                Tempo dedicado a resolver imprevistos, apagar incêndios, lidar com urgências não planejadas e corrigir problemas inesperados.
+              </p>
               <Slider
                 value={[data.timeDistribution?.resolution || 34]}
                 onValueChange={([value]) => updateTimeDistribution('resolution', value)}
@@ -279,9 +243,6 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
                 disabled={readonly}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground">
-                Tempo apagando incêndios e resolvendo imprevistos
-              </p>
             </div>
           </div>
         </div>
@@ -290,16 +251,11 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
         {/* Blockers */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="space-y-2">
               <h3 className="text-lg font-semibold">Existem bloqueadores no seu trabalho?</h3>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Identifique obstáculos que estão impedindo ou dificultando seu trabalho. Verde = sem bloqueios significativos, Amarelo = alguns impedimentos, Vermelho = bloqueios críticos.</p>
-                </TooltipContent>
-              </Tooltip>
+              <p className="text-sm text-muted-foreground">
+                Existem obstáculos impedindo ou dificultando seu trabalho? Se sim, qual o nível de impacto? Verde = sem bloqueios significativos, Amarelo = alguns impedimentos, Vermelho = bloqueios críticos.
+              </p>
             </div>
 
           <div className="space-y-3">
@@ -364,19 +320,14 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
         {/* Tool Adequacy */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">As ferramentas que você usa são adequadas?</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Avalie se as ferramentas, sistemas e tecnologias disponíveis atendem suas necessidades para executar o trabalho com eficiência e qualidade.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Badge variant="outline">{data.toolAdequacy || 3}/5</Badge>
               </div>
-              <Badge variant="outline">{data.toolAdequacy || 3}/5</Badge>
+              <p className="text-sm text-muted-foreground">
+                Em uma escala de 1 a 5, as ferramentas, sistemas e tecnologias disponíveis atendem suas necessidades para executar o trabalho com eficiência e qualidade?
+              </p>
             </div>
           <Slider
             value={[data.toolAdequacy || 3]}
@@ -396,19 +347,14 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
         {/* Priority Clarity */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">As prioridades do seu trabalho estão claras?</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Avalie o quanto você entende claramente o que deve ser priorizado no seu trabalho e como as tarefas se ordenam em termos de importância e urgência.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Badge variant="outline">{data.priorityClarity || 5}/10</Badge>
               </div>
-              <Badge variant="outline">{data.priorityClarity || 5}/10</Badge>
+              <p className="text-sm text-muted-foreground">
+                Em uma escala de 1 a 10, o quanto você entende claramente o que deve ser priorizado no seu trabalho e como as tarefas se ordenam em termos de importância e urgência?
+              </p>
             </div>
           <Slider
             value={[data.priorityClarity || 5]}
@@ -425,6 +371,5 @@ export function BlockA({ data, onChange, readonly = false }: BlockAProps) {
         </div>
         </Card>
       </div>
-    </TooltipProvider>
   );
 }

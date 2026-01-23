@@ -1,16 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import type { BlockB as BlockBType } from '@/types';
 
 interface BlockBProps {
@@ -23,7 +16,6 @@ export function BlockB({ data, onChange, readonly = false }: BlockBProps) {
   const { t } = useTranslation();
 
   return (
-    <TooltipProvider>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold text-primary mb-2">
@@ -37,21 +29,16 @@ export function BlockB({ data, onChange, readonly = false }: BlockBProps) {
         {/* Goal Connection */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-1">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">Você se sente conectado aos objetivos da empresa?</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Avalie o quanto você compreende como seu trabalho contribui para os objetivos estratégicos e metas da organização.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Badge variant="outline" className="text-lg">
+                  {data.goalConnection || 3}/5
+                </Badge>
               </div>
-              <Badge variant="outline" className="text-lg">
-                {data.goalConnection || 3}/5
-              </Badge>
+              <p className="text-sm text-muted-foreground">
+                Em uma escala de 1 a 5, o quanto você compreende como seu trabalho contribui para os objetivos estratégicos e metas da organização?
+              </p>
             </div>
 
           <Slider
@@ -74,21 +61,16 @@ export function BlockB({ data, onChange, readonly = false }: BlockBProps) {
         {/* Autonomy */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-1">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">Qual o nível de autonomia nas suas decisões?</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Indique o quanto você tem liberdade para tomar decisões do dia a dia sem precisar de aprovações constantes ou micro gerenciamento.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Badge variant="outline" className="text-lg">
+                  {data.autonomy || 50}%
+                </Badge>
               </div>
-              <Badge variant="outline" className="text-lg">
-                {data.autonomy || 50}%
-              </Badge>
+              <p className="text-sm text-muted-foreground">
+                Em uma escala de 0% a 100%, o quanto você tem liberdade para tomar decisões do dia a dia sem precisar de aprovações constantes ou micro gerenciamento?
+              </p>
             </div>
 
           <Slider
@@ -111,16 +93,11 @@ export function BlockB({ data, onChange, readonly = false }: BlockBProps) {
         {/* Innovation */}
         <Card className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="space-y-2">
               <Label className="text-lg font-semibold">Teve oportunidade de inovar neste período?</Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Indique se você teve espaço para experimentar novas abordagens, propor melhorias ou implementar soluções criativas no seu trabalho.</p>
-                </TooltipContent>
-              </Tooltip>
+              <p className="text-sm text-muted-foreground">
+                Você teve espaço para experimentar novas abordagens, propor melhorias ou implementar soluções criativas no seu trabalho neste período?
+              </p>
             </div>
 
           <RadioGroup
@@ -182,6 +159,5 @@ export function BlockB({ data, onChange, readonly = false }: BlockBProps) {
         </div>
         </Card>
       </div>
-    </TooltipProvider>
   );
 }

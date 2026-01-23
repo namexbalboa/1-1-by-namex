@@ -1,16 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import type { BlockC as BlockCType } from '@/types';
 
 interface BlockCProps {
@@ -32,7 +25,6 @@ export function BlockC({ data, onChange, readonly = false }: BlockCProps) {
   };
 
   return (
-    <TooltipProvider>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold text-primary mb-2">
@@ -46,23 +38,18 @@ export function BlockC({ data, onChange, readonly = false }: BlockCProps) {
       {/* Psychological Safety */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-1">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">
                 Você se sente seguro para expressar opiniões?
               </Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Avalie o quanto você se sente confortável para expressar suas opiniões, fazer perguntas, admitir erros e dar sugestões sem medo de represálias, julgamentos ou constrangimento.</p>
-                </TooltipContent>
-              </Tooltip>
+              <Badge variant="outline" className="text-lg">
+                {data.psychologicalSafety || 3}/5
+              </Badge>
             </div>
-            <Badge variant="outline" className="text-lg">
-              {data.psychologicalSafety || 3}/5
-            </Badge>
+            <p className="text-sm text-muted-foreground">
+              Em uma escala de 1 a 5, o quanto você se sente confortável para expressar suas opiniões, fazer perguntas, admitir erros e dar sugestões sem medo de represálias, julgamentos ou constrangimento?
+            </p>
           </div>
 
           <Slider
@@ -93,28 +80,23 @@ export function BlockC({ data, onChange, readonly = false }: BlockCProps) {
       {/* Collaboration Friction */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-1">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">
                 Como está o fluxo de colaboração com o time?
               </Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 text-muted-foreground cursor-help flex-shrink-0" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>Indique o nível de atrito ou dificuldade que você enfrenta ao colaborar com colegas, outros times ou áreas da empresa. Valores baixos indicam colaboração fluida, valores altos indicam dificuldades frequentes.</p>
-                </TooltipContent>
-              </Tooltip>
+              <Badge
+                variant={
+                  (data.collaborationFriction || 5) <= 3 ? 'default' : 'destructive'
+                }
+                className="text-lg"
+              >
+                {data.collaborationFriction || 5}/10
+              </Badge>
             </div>
-            <Badge
-              variant={
-                (data.collaborationFriction || 5) <= 3 ? 'default' : 'destructive'
-              }
-              className="text-lg"
-            >
-              {data.collaborationFriction || 5}/10
-            </Badge>
+            <p className="text-sm text-muted-foreground">
+              Em uma escala de 1 a 10, qual o nível de atrito ou dificuldade que você enfrenta ao colaborar com colegas, outros times ou áreas da empresa? (Valores baixos indicam colaboração fluida, valores altos indicam dificuldades frequentes)
+            </p>
           </div>
 
           <Slider
@@ -139,18 +121,13 @@ export function BlockC({ data, onChange, readonly = false }: BlockCProps) {
       {/* Recognition */}
       <Card className="p-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <Label className="text-lg font-semibold">
               Você se sente reconhecido pelo seu trabalho?
             </Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Avalie o quanto você percebe que seu trabalho, esforços e contribuições são reconhecidos e valorizados pelo seu gestor, colegas e pela organização como um todo.</p>
-              </TooltipContent>
-            </Tooltip>
+            <p className="text-sm text-muted-foreground">
+              O quanto você percebe que seu trabalho, esforços e contribuições são reconhecidos e valorizados pelo seu gestor, colegas e pela organização como um todo?
+            </p>
           </div>
 
           <RadioGroup
@@ -237,6 +214,5 @@ export function BlockC({ data, onChange, readonly = false }: BlockCProps) {
         </div>
       </Card>
       </div>
-    </TooltipProvider>
   );
 }

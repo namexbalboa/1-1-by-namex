@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Edit, Trash2, UserCog } from 'lucide-react';
+import { Plus, Edit, Trash2, UserCog, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,7 +46,11 @@ interface Manager {
   name: string;
 }
 
-export function CollaboratorsManager() {
+interface CollaboratorsManagerProps {
+  isActive?: boolean;
+}
+
+export function CollaboratorsManager({ isActive }: CollaboratorsManagerProps) {
   const { t } = useTranslation();
   const { collaborator } = useAuth();
   const toast = useToast();
@@ -57,6 +61,7 @@ export function CollaboratorsManager() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [managers, setManagers] = useState<Manager[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingDynamicData, setLoadingDynamicData] = useState(false);
   const [activeView, setActiveView] = useState<'list' | 'create'>('list');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [filterRole, setFilterRole] = useState<'all' | 'manager' | 'employee'>('all');
@@ -75,6 +80,13 @@ export function CollaboratorsManager() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Reload dynamic data when tab becomes active
+  useEffect(() => {
+    if (isActive) {
+      loadDynamicData();
+    }
+  }, [isActive]);
 
   const loadData = async () => {
     try {
@@ -104,6 +116,33 @@ export function CollaboratorsManager() {
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadDynamicData = async () => {
+    try {
+      setLoadingDynamicData(true);
+
+      const tenantId = collaborator?.tenantId
+        ? typeof collaborator.tenantId === 'string'
+          ? collaborator.tenantId
+          : collaborator.tenantId._id
+        : undefined;
+
+      // Reload only dynamic data (job roles, departments, managers)
+      const [jobRolesResponse, departmentsResponse, collabResponse] = await Promise.all([
+        api.get('/settings/job-roles', { params: { tenantId } }),
+        api.get('/settings/departments', { params: { tenantId } }),
+        api.get('/collaborators', { params: { tenantId } }),
+      ]);
+
+      setJobRoles(jobRolesResponse.data);
+      setDepartments(departmentsResponse.data);
+      setManagers(collabResponse.data.filter((c: Collaborator) => c.role === 'manager'));
+    } catch (error) {
+      console.error('Error loading dynamic data:', error);
+    } finally {
+      setLoadingDynamicData(false);
     }
   };
 
@@ -328,7 +367,7 @@ export function CollaboratorsManager() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Nome completo"
-                  className="bg-white"
+                  className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -339,7 +378,7 @@ export function CollaboratorsManager() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="email@example.com"
-                  className="bg-white"
+                  className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -350,7 +389,7 @@ export function CollaboratorsManager() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Senha de acesso"
-                  className="bg-white"
+                  className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -359,7 +398,7 @@ export function CollaboratorsManager() {
                   value={formData.preferredLanguage}
                   onValueChange={(value: 'pt' | 'en' | 'es') => setFormData({ ...formData, preferredLanguage: value })}
                 >
-                  <SelectTrigger className="bg-white">
+                  <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -374,9 +413,20 @@ export function CollaboratorsManager() {
                 <Select
                   value={formData.jobRoleId || undefined}
                   onValueChange={(value) => setFormData({ ...formData, jobRoleId: value === 'none' ? '' : value })}
+                  disabled={loadingDynamicData}
                 >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Selecione um cargo" />
+                  <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <SelectValue
+                      placeholder={
+                        loadingDynamicData ? (
+                          <span className="flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          </span>
+                        ) : (
+                          "Selecione um cargo"
+                        )
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum</SelectItem>
@@ -393,9 +443,20 @@ export function CollaboratorsManager() {
                 <Select
                   value={formData.departmentId || undefined}
                   onValueChange={(value) => setFormData({ ...formData, departmentId: value === 'none' ? '' : value })}
+                  disabled={loadingDynamicData}
                 >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Selecione um departamento" />
+                  <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <SelectValue
+                      placeholder={
+                        loadingDynamicData ? (
+                          <span className="flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          </span>
+                        ) : (
+                          "Selecione um departamento"
+                        )
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum</SelectItem>
@@ -412,9 +473,20 @@ export function CollaboratorsManager() {
                 <Select
                   value={formData.managerId || undefined}
                   onValueChange={(value) => setFormData({ ...formData, managerId: value === 'none' ? '' : value })}
+                  disabled={loadingDynamicData}
                 >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Selecione um gestor" />
+                  <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <SelectValue
+                      placeholder={
+                        loadingDynamicData ? (
+                          <span className="flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          </span>
+                        ) : (
+                          "Selecione um gestor"
+                        )
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum</SelectItem>
@@ -469,7 +541,7 @@ export function CollaboratorsManager() {
                           <Input
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="bg-white"
+                            className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
                         <div>
@@ -478,7 +550,7 @@ export function CollaboratorsManager() {
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="bg-white"
+                            className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
                         <div>
@@ -487,7 +559,7 @@ export function CollaboratorsManager() {
                             value={formData.preferredLanguage}
                             onValueChange={(value: 'pt' | 'en' | 'es') => setFormData({ ...formData, preferredLanguage: value })}
                           >
-                            <SelectTrigger className="bg-white">
+                            <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -502,9 +574,20 @@ export function CollaboratorsManager() {
                           <Select
                             value={formData.jobRoleId || undefined}
                             onValueChange={(value) => setFormData({ ...formData, jobRoleId: value === 'none' ? '' : value })}
+                            disabled={loadingDynamicData}
                           >
-                            <SelectTrigger className="bg-white">
-                              <SelectValue placeholder="Selecione um cargo" />
+                            <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                              <SelectValue
+                                placeholder={
+                                  loadingDynamicData ? (
+                                    <span className="flex items-center justify-center">
+                                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                    </span>
+                                  ) : (
+                                    "Selecione um cargo"
+                                  )
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">Nenhum</SelectItem>
@@ -521,9 +604,20 @@ export function CollaboratorsManager() {
                           <Select
                             value={formData.departmentId || undefined}
                             onValueChange={(value) => setFormData({ ...formData, departmentId: value === 'none' ? '' : value })}
+                            disabled={loadingDynamicData}
                           >
-                            <SelectTrigger className="bg-white">
-                              <SelectValue placeholder="Selecione um departamento" />
+                            <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                              <SelectValue
+                                placeholder={
+                                  loadingDynamicData ? (
+                                    <span className="flex items-center justify-center">
+                                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                    </span>
+                                  ) : (
+                                    "Selecione um departamento"
+                                  )
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">Nenhum</SelectItem>
@@ -540,9 +634,20 @@ export function CollaboratorsManager() {
                           <Select
                             value={formData.managerId || undefined}
                             onValueChange={(value) => setFormData({ ...formData, managerId: value === 'none' ? '' : value })}
+                            disabled={loadingDynamicData}
                           >
-                            <SelectTrigger className="bg-white">
-                              <SelectValue placeholder="Selecione um gestor" />
+                            <SelectTrigger className="bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                              <SelectValue
+                                placeholder={
+                                  loadingDynamicData ? (
+                                    <span className="flex items-center justify-center">
+                                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                    </span>
+                                  ) : (
+                                    "Selecione um gestor"
+                                  )
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">Nenhum</SelectItem>

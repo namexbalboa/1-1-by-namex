@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: 1-1-by-namex-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: MAILERSEND_API_KEY
+        sync: false
+      - key: MAILERSEND_SENDER_EMAIL
+        sync: false
+      - key: MAILERSEND_SENDER_NAME
+        value: 1:1 Meetings Platform
+      - key: FRONTEND_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false

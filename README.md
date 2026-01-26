@@ -124,7 +124,39 @@ npm test
 
 ## 🚀 Deploy
 
-Consulte [PLANO_DE_CONSTRUCAO.md](./PLANO_DE_CONSTRUCAO.md) para instruções detalhadas de deploy.
+### 📦 Início Rápido
+
+O projeto está **100% preparado** para deploy no **Cloudflare Pages** (frontend) e **Railway.app** (backend).
+
+**⭐ Começar agora**: [DEPLOY_RAPIDO.md](./DEPLOY_RAPIDO.md) - Deploy em 15 minutos
+
+**📋 Arquivos criados**: [DEPLOY_SUMMARY.md](./DEPLOY_SUMMARY.md) - Resumo de todos os arquivos
+
+**📚 Documentação completa**: [CLOUDFLARE_DEPLOY.md](./CLOUDFLARE_DEPLOY.md) - Guia detalhado
+
+### Plataformas Suportadas
+
+**Frontend (Cloudflare Pages)**:
+- Deploy automático via GitHub
+- HTTPS gratuito
+- CDN global
+- Free tier generoso
+
+**Backend**:
+- [Railway.app](https://railway.app) (Recomendado)
+- [Render.com](https://render.com)
+- [Fly.io](https://fly.io)
+- Qualquer plataforma que suporte Docker
+
+### Scripts Úteis
+
+```bash
+# Gerar secrets seguros para produção
+node backend/scripts/generate-secrets.js
+
+# Verificar variáveis de ambiente
+node backend/scripts/check-env.js
+```
 
 ## 📝 Licença
 

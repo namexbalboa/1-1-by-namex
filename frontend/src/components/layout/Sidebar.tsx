@@ -127,11 +127,19 @@ export function Sidebar({ className }: SidebarProps) {
               <LanguageSwitcher />
             </div>
             <Button
+              type="button"
               variant="destructive"
               className="w-full"
-              onClick={() => {
-                signOut();
-                setIsOpen(false);
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🖱️ Logout button clicked in Sidebar');
+                try {
+                  await signOut();
+                  setIsOpen(false);
+                } catch (error) {
+                  console.error('❌ Error during logout:', error);
+                }
               }}
             >
               <LogOut className="h-4 w-4 mr-2" />

@@ -17,7 +17,7 @@ interface EmployeeLayoutProps {
 
 export function EmployeeLayout({ children }: EmployeeLayoutProps) {
   const { t, i18n } = useTranslation();
-  const { collaborator, logout } = useAuth();
+  const { collaborator, signOut } = useAuth();
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -59,7 +59,21 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
             </Select>
 
             {/* Logout Button */}
-            <Button onClick={logout} variant="ghost" size="sm">
+            <Button
+              type="button"
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🖱️ Logout button clicked (EmployeeLayout)');
+                try {
+                  await signOut();
+                } catch (error) {
+                  console.error('❌ Error during logout:', error);
+                }
+              }}
+              variant="ghost"
+              size="sm"
+            >
               <LogOut className="w-4 h-4 mr-2" />
               {t('common.logout')}
             </Button>

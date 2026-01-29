@@ -162,10 +162,24 @@ export function useAuth() {
 
   const signOut = async () => {
     try {
+      console.log('🚪 Signing out user...');
       setLoading(true);
+
+      // Sign out from Firebase
       await firebaseSignOut(auth);
+
+      // Clear Zustand store (which also clears localStorage)
       storeLogout();
+
+      // Clear sessionStorage as well
+      sessionStorage.clear();
+
+      console.log('✅ User signed out successfully, storage cleared');
+
+      // Force redirect to login page
+      window.location.href = '/login';
     } catch (error: any) {
+      console.error('❌ Logout error:', error);
       setError(error.message || 'Logout failed');
       throw error;
     } finally {
